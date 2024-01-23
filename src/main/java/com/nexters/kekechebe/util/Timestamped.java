@@ -24,6 +24,9 @@ public class Timestamped {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
+    @Column
+    private LocalDateTime deletedAt;
+
     public static String dateTimeFormatter(LocalDateTime localDateTime) {
         return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }

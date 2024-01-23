@@ -3,6 +3,7 @@ package com.nexters.kekechebe.domain.memo.controller;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoCreateRequest;
 import com.nexters.kekechebe.domain.memo.service.MemoService;
 import com.nexters.kekechebe.dto.BaseResponse;
+import com.nexters.kekechebe.exceptions.StatusCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class MemoController {
 //        long memberId = Long.parseLong(httpServletRequest.getAttribute("memberId").toString()); 회원 구현에 따라 변경 예정
         long memberId = 1L;
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(memoService.saveMemo(memberId, request));
+        memoService.saveMemo(memberId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse(StatusCode.OK));
     }
 }

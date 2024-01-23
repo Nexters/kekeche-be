@@ -6,10 +6,13 @@ import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.repository.MemberRepository;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoCreateRequest;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
+import com.nexters.kekechebe.domain.memo.dto.response.MemoPage;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +41,15 @@ public class MemoService {
                 .build();
 
         memoRepository.save(memo);
+    }
+
+    public MemoPage getAllMemos(long memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoResultException("해당하는 id의 회원을 찾을 수 없습니다."));
+
+        Page<Memo> memos = memoRepository.findAllByMember(member, pageable);
+
+        return MemoPage.from(memos);
     }
 
     @Transactional

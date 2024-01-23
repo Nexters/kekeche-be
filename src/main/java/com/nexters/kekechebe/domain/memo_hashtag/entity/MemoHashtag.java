@@ -2,6 +2,7 @@ package com.nexters.kekechebe.domain.memo_hashtag.entity;
 
 import com.nexters.kekechebe.domain.hashtag.entity.Hashtag;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
+import com.nexters.kekechebe.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(name = "memo_hashtag")
 @SQLRestriction("deleted_at IS NULL")
 @SQLDelete(sql = "UPDATE memo_hashtag SET deleted_at = current_timestamp WHERE id = ?")
-public class MemoHashtag {
+public class MemoHashtag extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

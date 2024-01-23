@@ -17,9 +17,9 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "character")
+@Table(name = "\"character\"")
 @SQLRestriction("deleted_at IS NULL")
-@SQLDelete(sql = "UPDATE character SET deleted_at = current_timestamp WHERE id = ?")
+@SQLDelete(sql = "UPDATE `character` SET deleted_at = current_timestamp WHERE id = ?")
 public class Character extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

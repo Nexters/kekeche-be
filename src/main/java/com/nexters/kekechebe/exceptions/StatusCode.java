@@ -32,12 +32,7 @@ public enum StatusCode {
     /**
      * 200 OK
      */
-    OK(HttpStatus.OK, "성공"),
-
-    /**
-     * 201 CREATED
-     */
-    CREATED(HttpStatus.CREATED, "성공");
+    OK(HttpStatus.OK, "성공");
 
     private final HttpStatus code;
     private final String message;

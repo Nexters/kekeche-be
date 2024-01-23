@@ -26,7 +26,7 @@ public class MemoController {
         long memberId = 1L;
 
         memoService.saveMemo(memberId, request);
-        return new BaseResponse(StatusCode.CREATED);
+        return new BaseResponse(StatusCode.OK);
     }
 
     @GetMapping

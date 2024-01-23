@@ -5,6 +5,7 @@ import com.nexters.kekechebe.domain.character.repository.CharacterRepository;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.repository.MemberRepository;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoCreateRequest;
+import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
 import jakarta.persistence.NoResultException;
@@ -37,5 +38,15 @@ public class MemoService {
                 .build();
 
         memoRepository.save(memo);
+    }
+
+    @Transactional
+    public void updateMemo(long memberId, long memoId, MemoUpdateRequest request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoResultException("회원을 찾을 수 없습니다."));
+        Memo memo = memoRepository.findByIdAndMember(memoId, member)
+                .orElseThrow(() -> new NoResultException("기록을 찾을 수 없습니다."));
+
+        memo.update(request);
     }
 }

@@ -45,7 +45,7 @@ public class MemoService {
 
     public MemoPage getAllMemos(long memberId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoResultException("해당하는 id의 회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoResultException("회원을 찾을 수 없습니다."));
 
         Page<Memo> memos = memoRepository.findAllByMember(member, pageable);
 
@@ -54,7 +54,7 @@ public class MemoService {
 
     public MemoPage getCharacterMemos(long memberId, long characterId, Pageable pageable) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoResultException("해당하는 id의 회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoResultException("회원을 찾을 수 없습니다."));
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
 

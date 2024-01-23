@@ -49,4 +49,14 @@ public class MemoService {
 
         memo.update(request);
     }
+
+    @Transactional
+    public void deleteMemo(long memberId, long memoId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoResultException("회원을 찾을 수 없습니다."));
+        Memo memo = memoRepository.findByIdAndMember(memoId, member)
+                .orElseThrow(() -> new NoResultException("기록을 찾을 수 없습니다."));
+
+        memoRepository.delete(memo);
+    }
 }

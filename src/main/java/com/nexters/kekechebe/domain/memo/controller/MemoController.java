@@ -34,4 +34,13 @@ public class MemoController {
 
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(StatusCode.OK));
     }
+
+    @DeleteMapping("/{memoId}")
+    public BaseResponse deleteMemo(@PathVariable("memoId") long memoId, HttpServletRequest httpServletRequest) {
+//        long memberId = Long.parseLong(httpServletRequest.getAttribute("memberId").toString()); 회원 구현에 따라 변경 예정
+        long memberId = 1L;
+        memoService.deleteMemo(memberId, memoId);
+
+        return new BaseResponse(StatusCode.OK);
+    }
 }

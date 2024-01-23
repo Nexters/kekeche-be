@@ -9,12 +9,12 @@ import org.springframework.http.HttpStatus;
 public enum StatusCode {
 
     /**
-     * 400 Bad Request
+     * 400 BAD REQUEST
      */
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다."),
 
     /**
-     * 401 Unauthorized
+     * 401 UNAUTHORIZED
      */
 
     /**
@@ -22,17 +22,22 @@ public enum StatusCode {
      */
 
     /**
-     * 404 Not Found
+     * 404 NOT FOUND
      */
 
     /**
-     * 409 Conflict
+     * 409 CONFLICT
      */
 
     /**
-     * 2xx OK
+     * 200 OK
      */
-    OK(HttpStatus.OK, "성공");
+    OK(HttpStatus.OK, "성공"),
+
+    /**
+     * 201 CREATED
+     */
+    CREATED(HttpStatus.CREATED, "성공");
 
     private final HttpStatus code;
     private final String message;

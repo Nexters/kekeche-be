@@ -1,8 +1,8 @@
 package com.nexters.kekechebe.domain.memo.dto.request;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class MemoCreateRequest {
     private long characterId;
     private String content;

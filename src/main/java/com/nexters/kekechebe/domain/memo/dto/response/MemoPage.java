@@ -2,12 +2,12 @@ package com.nexters.kekechebe.domain.memo.dto.response;
 
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-@Data
+@Getter
 @Builder
 public class MemoPage {
     private List<MemoDetail> memos;

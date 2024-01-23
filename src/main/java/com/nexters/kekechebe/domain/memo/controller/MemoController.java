@@ -41,6 +41,19 @@ public class MemoController {
         return new DataResponse<>(StatusCode.OK, memoPage);
     }
 
+    @GetMapping("/character/{characterId}")
+    public DataResponse<MemoPage> getCharacterMemos(
+            @PathVariable("characterId") long characterId,
+            @PageableDefault(size=20, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            HttpServletRequest httpServletRequest
+    ) {
+//        long memberId = Long.parseLong(httpServletRequest.getAttribute("memberId").toString()); 회원 구현에 따라 변경 예정
+        long memberId = 1L;
+        MemoPage characterMemoPage = memoService.getCharacterMemos(memberId, characterId, pageable);
+
+        return new DataResponse<>(StatusCode.OK, characterMemoPage);
+    }
+
     @PutMapping("/{memoId}")
     public BaseResponse updateMemo(@PathVariable("memoId") long memoId, @RequestBody MemoUpdateRequest request, HttpServletRequest httpServletRequest) {
 //        long memberId = Long.parseLong(httpServletRequest.getAttribute("memberId").toString()); 회원 구현에 따라 변경 예정

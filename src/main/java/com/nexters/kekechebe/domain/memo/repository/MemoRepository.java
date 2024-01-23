@@ -1,5 +1,6 @@
 package com.nexters.kekechebe.domain.memo.repository;
 
+import com.nexters.kekechebe.domain.character.entity.Character;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import org.springframework.data.domain.Page;
@@ -14,4 +15,6 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
 
     @Query("SELECT m FROM Memo m JOIN FETCH m.character WHERE m.member = :member")
     Page<Memo> findAllByMember(Member member, Pageable pageable);
+
+    Page<Memo> findAllByMemberAndCharacter(Member member, Character character, Pageable pageable);
 }

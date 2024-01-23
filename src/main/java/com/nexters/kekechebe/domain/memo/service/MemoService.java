@@ -52,6 +52,17 @@ public class MemoService {
         return MemoPage.from(memos);
     }
 
+    public MemoPage getCharacterMemos(long memberId, long characterId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoResultException("해당하는 id의 회원을 찾을 수 없습니다."));
+        Character character = characterRepository.findById(characterId)
+                .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
+
+        Page<Memo> memos = memoRepository.findAllByMemberAndCharacter(member, character, pageable);
+
+        return MemoPage.from(memos);
+    }
+
     @Transactional
     public void updateMemo(long memberId, long memoId, MemoUpdateRequest request) {
         Member member = memberRepository.findById(memberId)

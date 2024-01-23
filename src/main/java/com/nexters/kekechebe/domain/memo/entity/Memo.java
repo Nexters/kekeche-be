@@ -2,6 +2,8 @@ package com.nexters.kekechebe.domain.memo.entity;
 
 import com.nexters.kekechebe.domain.character.entity.Character;
 import com.nexters.kekechebe.domain.member.entity.Member;
+import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
+import com.nexters.kekechebe.domain.memo.dto.response.MemoDetail;
 import com.nexters.kekechebe.domain.memo_hashtag.entity.MemoHashtag;
 import com.nexters.kekechebe.util.Timestamped;
 import jakarta.persistence.*;
@@ -49,5 +51,17 @@ public class Memo extends Timestamped {
         this.content = content;
         this.member = member;
         this.character = character;
+    }
+
+    public void update(MemoUpdateRequest request) {
+        this.content = request.getContent();
+    }
+
+    public MemoDetail toMemoDetail() {
+        return MemoDetail.builder()
+                .id(id)
+                .content(content)
+                .characterId(character.getId())
+                .build();
     }
 }

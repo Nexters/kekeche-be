@@ -95,7 +95,7 @@ public class MemoService {
         int memoCnt = memoRepository.countByMemberAndCharacterAndCreatedAtBetween(member, character, today.getStartOfDay(), today.getEndOfDay());
 
         if (memoCnt >= MEMO_LIMIT) {
-            throw new IllegalStateException("캐릭터 당 허용된 기록 개수를 초과하였습니다.");
+            throw new IllegalStateException("캐릭터당 허용된 기록 개수를 초과하였습니다.");
         }
     }
 }

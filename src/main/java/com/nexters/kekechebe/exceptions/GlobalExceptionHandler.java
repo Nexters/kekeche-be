@@ -21,6 +21,11 @@ public class GlobalExceptionHandler {
         return ExceptionResponse.toResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
+    @ExceptionHandler(value = {IllegalStateException.class})
+    protected ResponseEntity<ExceptionResponse> handleException(IllegalStateException e) {
+        return ExceptionResponse.toResponseEntity(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     protected ResponseEntity<ExceptionResponse> handleException(MethodArgumentNotValidException e) {
         return ExceptionResponse.toResponseEntity(HttpStatus.BAD_REQUEST,

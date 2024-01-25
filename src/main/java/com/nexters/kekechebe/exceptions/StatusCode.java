@@ -16,6 +16,7 @@ public enum StatusCode {
     /**
      * 401 UNAUTHORIZED
      */
+    TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한 정보가 잘못된 토큰입니다."),
 
     /**
      * 403 FORBIDDEN

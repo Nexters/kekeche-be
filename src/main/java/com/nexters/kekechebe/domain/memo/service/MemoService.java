@@ -9,6 +9,8 @@ import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoPage;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
+import com.nexters.kekechebe.util.time.TimeUtil;
+import com.nexters.kekechebe.util.time.Today;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemoService {
+    private static final int MEMO_LIMIT = 3;
+
     private final MemoRepository memoRepository;
     private final MemberRepository memberRepository;
     private final CharacterRepository characterRepository;
@@ -33,6 +37,8 @@ public class MemoService {
                 .orElseThrow(() -> new NoResultException("회원을 찾을 수 없습니다."));
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
+
+        validateMemoLimit(member, character);
 
         Memo memo = Memo.builder()
                 .content(content)
@@ -81,5 +87,15 @@ public class MemoService {
                 .orElseThrow(() -> new NoResultException("기록을 찾을 수 없습니다."));
 
         memoRepository.delete(memo);
+    }
+
+    private void validateMemoLimit(Member member, Character character) {
+        Today today = TimeUtil.getStartAndEndOfToday();
+
+        int memoCnt = memoRepository.countByMemberAndCharacterAndCreatedAtBetween(member, character, today.getStartOfDay(), today.getEndOfDay());
+
+        if (memoCnt >= MEMO_LIMIT) {
+            throw new IllegalStateException("캐릭터당 허용된 기록 개수를 초과하였습니다.");
+        }
     }
 }

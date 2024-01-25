@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface MemoRepository extends JpaRepository<Memo, Long> {
@@ -17,4 +18,6 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
     Page<Memo> findAllByMember(Member member, Pageable pageable);
 
     Page<Memo> findAllByMemberAndCharacter(Member member, Character character, Pageable pageable);
+
+    int countByMemberAndCharacterAndCreatedAtBetween(Member member, Character character, LocalDateTime startDateTime, LocalDateTime endDateTime);
 }

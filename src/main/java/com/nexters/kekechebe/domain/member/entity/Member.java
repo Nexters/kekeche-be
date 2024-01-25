@@ -31,11 +31,8 @@ public class Member extends Timestamped {
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "password", nullable = false)
-    private String password;
-
     @Column(name = "kakao_id", nullable = false)
-    private String kakaoId;
+    private Long kakaoId;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Character> characters = new ArrayList<>();
@@ -47,12 +44,15 @@ public class Member extends Timestamped {
     public Member(
             String email,
             String nickname,
-            String password,
-            String kakaoId
+            Long kakaoId
     ) {
         this.email = email;
         this.nickname = nickname;
-        this.password = password;
         this.kakaoId = kakaoId;
+    }
+
+    public Member kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
     }
 }

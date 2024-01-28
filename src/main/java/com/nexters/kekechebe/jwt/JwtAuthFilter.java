@@ -1,15 +1,11 @@
 package com.nexters.kekechebe.jwt;
 
-import static com.nexters.kekechebe.exceptions.StatusCode.*;
-
 import java.io.IOException;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.nexters.kekechebe.exceptions.CustomException;
 
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -31,10 +27,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String token = jwtUtil.resolveToken(request);
 
-        if (token != null) {
-            if(!jwtUtil.validateToken(token)){
-                throw new CustomException(TOKEN_UNAUTHORIZED);
-            }
+        if (token != null && jwtUtil.validateToken(token)) {
             Claims info = jwtUtil.getUserInfoFromToken(token);
             setAuthentication(info.getSubject());
         }

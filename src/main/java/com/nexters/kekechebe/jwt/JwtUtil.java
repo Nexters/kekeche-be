@@ -1,5 +1,7 @@
 package com.nexters.kekechebe.jwt;
 
+import static com.nexters.kekechebe.exceptions.StatusCode.*;
+
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.nexters.kekechebe.exceptions.CustomException;
 import com.nexters.kekechebe.security.UserDetailsServiceImpl;
 
 import io.jsonwebtoken.Claims;
@@ -47,7 +50,7 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(String username){
+    public String createToken(String username) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -59,7 +62,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String resolveToken(HttpServletRequest request){
+    public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
 
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)){
@@ -74,22 +77,25 @@ public class JwtUtil {
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
+            throw new CustomException(INVALID_JWT_SIGNATURE);
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT token, 만료된 JWT token 입니다.");
+            // log.info("Expired JWT token, 만료된 JWT token 입니다.");
+            throw new CustomException(EXPIRED_JWT_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
+            throw new CustomException(UNSUPPORTED_JWT_TOKEN);
         } catch (IllegalArgumentException e) {
             log.info("JWT claims is empty, 잘못된 JWT 토큰 입니다.");
+            throw new CustomException(JWT_CLAIMS_IS_EMPTY);
         }
-        return false;
     }
 
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    public Authentication createAuthentication(String username) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+    public Authentication createAuthentication(String email) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }

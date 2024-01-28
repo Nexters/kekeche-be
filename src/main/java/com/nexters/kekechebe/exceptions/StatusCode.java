@@ -16,6 +16,10 @@ public enum StatusCode {
     /**
      * 401 UNAUTHORIZED
      */
+    INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED, "잘못된 JWT 서명입니다."),
+    EXPIRED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 JWT 토큰입니다."),
+    UNSUPPORTED_JWT_TOKEN(HttpStatus.UNAUTHORIZED, "지원되지 않는 JWT 토큰 입니다."),
+    JWT_CLAIMS_IS_EMPTY(HttpStatus.UNAUTHORIZED, "잘못된 JWT 토큰 입니다."),
     TOKEN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한 정보가 잘못된 토큰입니다."),
 
     /**

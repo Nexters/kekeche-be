@@ -50,9 +50,4 @@ public class Member extends Timestamped {
         this.nickname = nickname;
         this.kakaoId = kakaoId;
     }
-
-    public Member kakaoIdUpdate(Long kakaoId) {
-        this.kakaoId = kakaoId;
-        return this;
-    }
 }

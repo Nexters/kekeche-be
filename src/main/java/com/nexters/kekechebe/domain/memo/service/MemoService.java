@@ -2,13 +2,16 @@ package com.nexters.kekechebe.domain.memo.service;
 
 import com.nexters.kekechebe.domain.character.entity.Character;
 import com.nexters.kekechebe.domain.character.repository.CharacterRepository;
+import com.nexters.kekechebe.domain.hashtag.entity.Hashtag;
+import com.nexters.kekechebe.domain.hashtag.repository.HashtagRepository;
 import com.nexters.kekechebe.domain.member.entity.Member;
-import com.nexters.kekechebe.domain.member.repository.MemberRepository;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoCreateRequest;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoPage;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
+import com.nexters.kekechebe.domain.memo_hashtag.entity.MemoHashtag;
+import com.nexters.kekechebe.domain.memo_hashtag.repository.MemoHashtagRepository;
 import com.nexters.kekechebe.util.time.TimeUtil;
 import com.nexters.kekechebe.util.time.Today;
 import jakarta.persistence.NoResultException;
@@ -18,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -25,13 +30,15 @@ public class MemoService {
     private static final int MEMO_LIMIT = 3;
 
     private final MemoRepository memoRepository;
-    private final MemberRepository memberRepository;
+    private final HashtagRepository hashtagRepository;
+    private final MemoHashtagRepository memoHashtagRepository;
     private final CharacterRepository characterRepository;
 
     @Transactional
     public void saveMemo(Member member, MemoCreateRequest request) {
         long characterId = request.getCharacterId();
         String content = request.getContent();
+        List<String> hashtags = request.getHashtags();
 
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
@@ -43,8 +50,19 @@ public class MemoService {
                 .member(member)
                 .character(character)
                 .build();
-
         memoRepository.save(memo);
+
+        List<Hashtag> buildHashTags = hashtags.stream()
+                .map(this::findOrSave)
+                .toList();
+
+        List<MemoHashtag> memoHashtags = buildHashTags.stream()
+                .map(hashtag -> MemoHashtag.builder()
+                        .hashtag(hashtag)
+                        .memo(memo)
+                        .build())
+                .toList();
+        memoHashtagRepository.saveAll(memoHashtags);
     }
 
     public MemoPage getAllMemos(Member member, Pageable pageable) {
@@ -86,5 +104,16 @@ public class MemoService {
         if (memoCnt >= MEMO_LIMIT) {
             throw new IllegalStateException("캐릭터당 허용된 기록 개수를 초과하였습니다.");
         }
+    }
+
+    private Hashtag findOrSave(String hashtagName) {
+        return hashtagRepository.findByContent(hashtagName)
+                .orElseGet(
+                        () -> hashtagRepository.save(
+                                Hashtag.builder()
+                                        .content(hashtagName)
+                                        .build()
+                        )
+                );
     }
 }

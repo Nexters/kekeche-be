@@ -5,6 +5,7 @@ import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -28,4 +29,13 @@ public class MemoHashtag extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hashtag_id", nullable = false)
     private Hashtag hashtag;
+
+    @Builder
+    public MemoHashtag(
+            Memo memo,
+            Hashtag hashtag
+    ) {
+        this.memo = memo;
+        this.hashtag = hashtag;
+    }
 }

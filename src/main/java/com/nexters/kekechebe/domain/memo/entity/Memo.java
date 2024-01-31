@@ -53,8 +53,8 @@ public class Memo extends Timestamped {
         this.character = character;
     }
 
-    public void update(MemoUpdateRequest request) {
-        this.content = request.getContent();
+    public void updateContent(String content) {
+        this.content = content;
     }
 
     public MemoDetail toMemoDetail() {

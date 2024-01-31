@@ -75,10 +75,23 @@ public class MemoService {
 
     @Transactional
     public void updateMemo(Member member, long memoId, MemoUpdateRequest request) {
+        List<String> hashtags = request.getHashtags();
+        String content = request.getContent();
+
         Memo memo = memoRepository.findByIdAndMember(memoId, member)
                 .orElseThrow(() -> new NoResultException("기록을 찾을 수 없습니다."));
 
-        memo.update(request);
+        hashtagRepository.deleteAll(memo.getHashtags());
+
+        List<Hashtag> buildHashTags = hashtags.stream()
+                .map(hashtag -> Hashtag.builder()
+                        .content(hashtag)
+                        .memo(memo)
+                        .build())
+                .toList();
+        hashtagRepository.saveAll(buildHashTags);
+
+        memo.updateContent(content);
     }
 
     @Transactional

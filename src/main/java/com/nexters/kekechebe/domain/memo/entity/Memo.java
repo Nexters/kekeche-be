@@ -31,6 +31,9 @@ public class Memo extends Timestamped {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "is_modified")
+    private Boolean isModified = false;
+
     @OneToMany(mappedBy = "memo", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Hashtag> hashtags = new ArrayList<>();
 
@@ -55,6 +58,7 @@ public class Memo extends Timestamped {
 
     public void updateContent(String content) {
         this.content = content;
+        this.isModified = true;
     }
 
     public MemoDetail toMemoDetail() {

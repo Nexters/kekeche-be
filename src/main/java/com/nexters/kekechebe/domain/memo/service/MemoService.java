@@ -10,8 +10,6 @@ import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoPage;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
-import com.nexters.kekechebe.domain.memo_hashtag.entity.MemoHashtag;
-import com.nexters.kekechebe.domain.memo_hashtag.repository.MemoHashtagRepository;
 import com.nexters.kekechebe.util.time.TimeUtil;
 import com.nexters.kekechebe.util.time.Today;
 import jakarta.persistence.NoResultException;
@@ -31,7 +29,6 @@ public class MemoService {
 
     private final MemoRepository memoRepository;
     private final HashtagRepository hashtagRepository;
-    private final MemoHashtagRepository memoHashtagRepository;
     private final CharacterRepository characterRepository;
 
     @Transactional
@@ -53,16 +50,12 @@ public class MemoService {
         memoRepository.save(memo);
 
         List<Hashtag> buildHashTags = hashtags.stream()
-                .map(this::findOrSave)
-                .toList();
-
-        List<MemoHashtag> memoHashtags = buildHashTags.stream()
-                .map(hashtag -> MemoHashtag.builder()
-                        .hashtag(hashtag)
+                .map(hashtag -> Hashtag.builder()
+                        .content(hashtag)
                         .memo(memo)
                         .build())
                 .toList();
-        memoHashtagRepository.saveAll(memoHashtags);
+        hashtagRepository.saveAll(buildHashTags);
     }
 
     public MemoPage getAllMemos(Member member, Pageable pageable) {
@@ -104,16 +97,5 @@ public class MemoService {
         if (memoCnt >= MEMO_LIMIT) {
             throw new IllegalStateException("캐릭터당 허용된 기록 개수를 초과하였습니다.");
         }
-    }
-
-    private Hashtag findOrSave(String hashtagName) {
-        return hashtagRepository.findByContent(hashtagName)
-                .orElseGet(
-                        () -> hashtagRepository.save(
-                                Hashtag.builder()
-                                        .content(hashtagName)
-                                        .build()
-                        )
-                );
     }
 }

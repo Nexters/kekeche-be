@@ -21,5 +21,5 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
 
     int countByMemberAndCharacterAndCreatedAtBetween(Member member, Character character, LocalDateTime startDateTime, LocalDateTime endDateTime);
 
-    long countMemoByMember(Member member);
+    int countMemoByMember(Member member);
 }

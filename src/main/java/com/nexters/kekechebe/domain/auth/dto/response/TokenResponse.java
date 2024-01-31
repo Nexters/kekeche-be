@@ -1,14 +1,13 @@
 package com.nexters.kekechebe.domain.auth.dto.response;
 
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@Builder
-@RequiredArgsConstructor
 @NoArgsConstructor(force = true)
 public class TokenResponse {
+    @JsonProperty("access_token")
     private final String accessToken;
 }

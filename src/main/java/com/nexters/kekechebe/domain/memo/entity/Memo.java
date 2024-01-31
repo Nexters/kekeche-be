@@ -3,6 +3,7 @@ package com.nexters.kekechebe.domain.memo.entity;
 import com.nexters.kekechebe.domain.character.entity.Character;
 import com.nexters.kekechebe.domain.hashtag.entity.Hashtag;
 import com.nexters.kekechebe.domain.member.entity.Member;
+import com.nexters.kekechebe.domain.memo.dto.CharacterDetail;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoDetail;
 import com.nexters.kekechebe.util.Timestamped;
@@ -65,7 +66,19 @@ public class Memo extends Timestamped {
         return MemoDetail.builder()
                 .id(id)
                 .content(content)
-                .characterId(character.getId())
+                .character(CharacterDetail.builder()
+                        .id(character.getId())
+                        .name(character.getName())
+                        .build())
+                .hashtags(toHashtagContents())
+                .isModified(isModified)
+                .createdAt(getCreatedAt())
                 .build();
+    }
+
+    public List<String> toHashtagContents() {
+        return hashtags.stream()
+                .map(Hashtag::getContent)
+                .toList();
     }
 }

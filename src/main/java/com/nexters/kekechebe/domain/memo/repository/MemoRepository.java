@@ -20,4 +20,7 @@ public interface MemoRepository extends JpaRepository<Memo, Long> {
     Page<Memo> findAllByMemberAndCharacter(Member member, Character character, Pageable pageable);
 
     int countByMemberAndCharacterAndCreatedAtBetween(Member member, Character character, LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+    @Query("SELECT m FROM Memo m JOIN FETCH m.character WHERE m.member = :member and m.content LIKE %:keyword%")
+    Page<Memo> searchAllByKeyword(Member member, String keyword, Pageable pageable);
 }

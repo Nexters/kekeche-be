@@ -165,4 +165,31 @@ public class MemoController {
 
         return ResponseEntity.ok(new BaseResponse(StatusCode.OK));
     }
+
+    @Operation(summary = "기록 검색", description = "회원이 기록을 검색합니다.")
+    @Parameter(name = "page", description = "조회할 페이지(0부터 시작)", example = "0")
+    @Parameter(name = "size", description = "조회할 기록 개수", example = "20")
+    @Parameter(name = "sort", description = "정렬", example = "createdAt,DESC")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+    })
+    @GetMapping("/search")
+    public ResponseEntity<DataResponse<MemoPage>> search(
+            @RequestParam("keyword") String keyword,
+            @Parameter(hidden = true) @PageableDefault(size=20, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal UserDetailsImpl userDetails)
+    {
+        Member member = userDetails.getMember();
+        MemoPage memoPage = memoService.search(member, keyword, pageable);
+
+        return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, memoPage));
+    }
 }

@@ -102,6 +102,12 @@ public class MemoService {
         memoRepository.delete(memo);
     }
 
+    public MemoPage search(Member member, String keyword, Pageable pageable) {
+        Page<Memo> memos = memoRepository.searchAllByKeyword(member, keyword, pageable);
+
+        return MemoPage.from(memos);
+    }
+
     private void validateMemoLimit(Member member, Character character) {
         Today today = TimeUtil.getStartAndEndOfToday();
 

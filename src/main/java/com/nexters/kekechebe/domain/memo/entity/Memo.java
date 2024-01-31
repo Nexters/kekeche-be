@@ -1,10 +1,10 @@
 package com.nexters.kekechebe.domain.memo.entity;
 
 import com.nexters.kekechebe.domain.character.entity.Character;
+import com.nexters.kekechebe.domain.hashtag.entity.Hashtag;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoDetail;
-import com.nexters.kekechebe.domain.memo_hashtag.entity.MemoHashtag;
 import com.nexters.kekechebe.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -32,7 +32,7 @@ public class Memo extends Timestamped {
     private String content;
 
     @OneToMany(mappedBy = "memo", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<MemoHashtag> memoHashtags = new ArrayList<>();
+    private List<Hashtag> hashtags = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)

@@ -21,9 +21,7 @@ public enum Keyword {
     GENEROUS(11, "관대한"),
     CONFIDENT(12, "자신감 있는"),
     COOPERATIVE(13, "협력적인"),
-    FREE(2, "여유로운"),
-
-    ;
+    FREE(14, "여유로운");
 
     private final Integer index;
     private final String value;

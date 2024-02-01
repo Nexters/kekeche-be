@@ -13,6 +13,6 @@ public class CharacterCreateRequest {
     private String name;
     private CharacterAsset.Shape shape;
     private CharacterAsset.Color color;
-    private List<Keyword> keyword;
+    private List<Keyword> keywords;
     private Item item;
 }

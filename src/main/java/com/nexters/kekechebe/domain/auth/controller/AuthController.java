@@ -1,5 +1,13 @@
 package com.nexters.kekechebe.domain.auth.controller;
 
+import com.nexters.kekechebe.exceptions.ExceptionResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +33,21 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
     private final AuthService authService;
 
+    @Operation(summary = "카카오 로그인", description = "카카오 로그인을 진행합니다.")
+    @Parameter(name = "code", description = "카카오 인가 코드", example = "QTxoN3oYZqrOPLbXROVx-nAtvpDzk6ph-1Zip1Vf3kdLBiX49ASx9kkIdQIKPXNNAAABjVozDgQq3eF1vjqPRg", required = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+    })
     @GetMapping("/kakao/callback")
-    public ResponseEntity<BaseResponse> kakaoLogin(@RequestParam(value = "code") String code, HttpServletResponse response) {
+    public ResponseEntity<DataResponse<LoginResponse>> kakaoLogin(@RequestParam(value = "code") String code, HttpServletResponse response) {
         log.info("Auth Controller >> code : {}", code);
 
         LoginResponse loginResponse = authService.kakaoLogin(code, response);

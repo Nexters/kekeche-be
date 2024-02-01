@@ -1,10 +1,11 @@
 package com.nexters.kekechebe.domain.memo.entity;
 
 import com.nexters.kekechebe.domain.character.entity.Character;
+import com.nexters.kekechebe.domain.hashtag.entity.Hashtag;
 import com.nexters.kekechebe.domain.member.entity.Member;
+import com.nexters.kekechebe.domain.memo.dto.CharacterDetail;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoDetail;
-import com.nexters.kekechebe.domain.memo_hashtag.entity.MemoHashtag;
 import com.nexters.kekechebe.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,8 +32,11 @@ public class Memo extends Timestamped {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "is_modified")
+    private Boolean isModified = false;
+
     @OneToMany(mappedBy = "memo", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<MemoHashtag> memoHashtags = new ArrayList<>();
+    private List<Hashtag> hashtags = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -53,15 +57,28 @@ public class Memo extends Timestamped {
         this.character = character;
     }
 
-    public void update(MemoUpdateRequest request) {
-        this.content = request.getContent();
+    public void updateContent(String content) {
+        this.content = content;
+        this.isModified = true;
     }
 
     public MemoDetail toMemoDetail() {
         return MemoDetail.builder()
                 .id(id)
                 .content(content)
-                .characterId(character.getId())
+                .character(CharacterDetail.builder()
+                        .id(character.getId())
+                        .name(character.getName())
+                        .build())
+                .hashtags(toHashtagContents())
+                .isModified(isModified)
+                .createdAt(getCreatedAt())
                 .build();
+    }
+
+    public List<String> toHashtagContents() {
+        return hashtags.stream()
+                .map(Hashtag::getContent)
+                .toList();
     }
 }

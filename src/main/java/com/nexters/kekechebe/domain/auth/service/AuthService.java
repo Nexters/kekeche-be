@@ -11,7 +11,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nexters.kekechebe.domain.auth.dto.response.TokenResponse;
 import com.nexters.kekechebe.domain.auth.dto.response.LoginResponse;
 import com.nexters.kekechebe.domain.auth.dto.response.UserInfoResponse;
@@ -35,7 +34,7 @@ public class AuthService {
     @Value("${oauth.kakao.redirect-uri}")
     private String redirectUri;
 
-    public LoginResponse kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public LoginResponse kakaoLogin(String code, HttpServletResponse response) {
         String accessToken = getToken(code);
         UserInfoResponse userInfoDto = getKakaoUserInfo(accessToken);
         Member kakaoUser = registerKakaoUserIfNeeded(userInfoDto);
@@ -71,7 +70,7 @@ public class AuthService {
         TokenResponse tokenDto = response.getBody();
         assert tokenDto != null;
         String accessToken = tokenDto.getAccessToken();
-        log.info("access token : {}", accessToken);
+        log.info("Auth Service >> access token : {}", accessToken);
         return accessToken;
     }
 
@@ -95,7 +94,7 @@ public class AuthService {
         String nickname = userInfoDto.getNickname();
         String email = userInfoDto.getEmail();
 
-        log.info("user info : {}, {}, {}", id, nickname, email);
+        log.info("Auth Service >> user info : {}, {}, {}", id, nickname, email);
 
         return userInfoDto;
     }

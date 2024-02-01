@@ -28,8 +28,7 @@ public class CharacterAsset {
         YELLOW(2),
         PURPLE(3),
         GREEN(4),
-        PINK(5)
-        ;
+        PINK(5);
 
         private final Integer value;
     }

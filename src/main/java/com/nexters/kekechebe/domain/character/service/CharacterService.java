@@ -36,7 +36,7 @@ public class CharacterService {
     public CharacterIdResponse saveCharacter(Member member, CharacterCreateRequest request) {
         validateCharacterLimit(member);
 
-        String keywordParsing = convertKeywordListToString(request.getKeyword());
+        String keywordParsing = convertKeywordListToString(request.getKeywords());
 
         Character character = Character.builder()
             .name(request.getName())
@@ -46,7 +46,7 @@ public class CharacterService {
             .shape(request.getShape())
             .color(request.getColor())
             .item(request.getItem())
-            .keyword(keywordParsing)
+            .keywords(keywordParsing)
             .member(member)
             .build();
 

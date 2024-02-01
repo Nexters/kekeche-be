@@ -37,23 +37,23 @@ public class Character extends Timestamped {
     private int exp;
 
     @Column(name = "variation", nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private CharacterAsset.Variation variation;
 
     @Column(name = "shape", nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private CharacterAsset.Shape shape;
 
     @Column(name = "color", nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private CharacterAsset.Color color;
 
     @Column(name = "item", nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Item item;
 
-    @Column(name = "keyword")
-    private String keyword;
+    @Column(name = "keywords")
+    private String keywords;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -71,7 +71,7 @@ public class Character extends Timestamped {
             CharacterAsset.Shape shape,
             CharacterAsset.Color color,
             Item item,
-            String keyword,
+            String keywords,
             Member member
     ) {
         this.name = name;
@@ -81,7 +81,7 @@ public class Character extends Timestamped {
         this.shape = shape;
         this.color = color;
         this.item = item;
-        this.keyword = keyword;
+        this.keywords = keywords;
         this.member = member;
     }
 

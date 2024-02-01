@@ -1,12 +1,16 @@
 package com.nexters.kekechebe.domain.character.dto.response;
 
-import static com.nexters.kekechebe.domain.character.enums.Level.*;
-
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nexters.kekechebe.domain.character.entity.Character;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.lang.reflect.Type;
+import java.util.List;
+
+import static com.nexters.kekechebe.domain.character.enums.Level.getNextLevelThreshold;
 
 @Getter
 @Builder
@@ -19,7 +23,7 @@ public class CharacterResponse {
     private Integer nextLevel;
     private String characterImage;
     private String itemImage;
-    private String keyword;
+    private List<Integer> keywords;
 
     public CharacterResponse(Character character) {
         this.id = character.getId();
@@ -29,8 +33,14 @@ public class CharacterResponse {
         this.nextLevel = getNextLevelThreshold(character.getExp());
         this.characterImage = "url";
         this.itemImage = "url";
-        this.keyword = character.getKeyword();
+        this.keywords = parseKeywords(character.getKeywords());
     }
 
+    private List<Integer> parseKeywords(String keywords) {
+        Gson gson = new Gson();
 
+        Type listType = new TypeToken<List<Integer>>() {}.getType();
+
+        return gson.fromJson(keywords, listType);
+    }
 }

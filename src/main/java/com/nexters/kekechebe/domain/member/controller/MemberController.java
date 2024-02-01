@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.service.MemberService;
 import com.nexters.kekechebe.dto.BaseResponse;
 import com.nexters.kekechebe.dto.DataResponse;
@@ -24,7 +25,7 @@ public class MemberController {
 
     @GetMapping
     public ResponseEntity<BaseResponse> getMemberInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        long memberId = userDetails.getMember().getId();
-        return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, memberService.getMemberInfo(memberId)));
+        Member member = userDetails.getMember();
+        return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, memberService.getMemberInfo(member)));
     }
 }

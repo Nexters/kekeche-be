@@ -1,5 +1,7 @@
 package com.nexters.kekechebe.domain.character.entity;
 
+import com.nexters.kekechebe.domain.character.enums.CharacterAsset;
+import com.nexters.kekechebe.domain.character.enums.Item;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.util.Timestamped;
@@ -35,16 +37,20 @@ public class Character extends Timestamped {
     private int exp;
 
     @Column(name = "variation", nullable = false)
-    private int variation;
+    @Enumerated
+    private CharacterAsset.Variation variation;
 
     @Column(name = "shape", nullable = false)
-    private String shape;
+    @Enumerated
+    private CharacterAsset.Shape shape;
 
     @Column(name = "color", nullable = false)
-    private String color;
+    @Enumerated
+    private CharacterAsset.Color color;
 
     @Column(name = "item", nullable = false)
-    private String item;
+    @Enumerated
+    private Item item;
 
     @Column(name = "keyword")
     private String keyword;
@@ -61,11 +67,12 @@ public class Character extends Timestamped {
             String name,
             int level,
             int exp,
-            int variation,
-            String shape,
-            String color,
-            String item,
-            String keyword
+            CharacterAsset.Variation variation,
+            CharacterAsset.Shape shape,
+            CharacterAsset.Color color,
+            Item item,
+            String keyword,
+            Member member
     ) {
         this.name = name;
         this.level = level;
@@ -75,5 +82,10 @@ public class Character extends Timestamped {
         this.color = color;
         this.item = item;
         this.keyword = keyword;
+        this.member = member;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
     }
 }

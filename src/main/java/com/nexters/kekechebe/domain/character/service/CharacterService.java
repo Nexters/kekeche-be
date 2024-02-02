@@ -1,5 +1,6 @@
 package com.nexters.kekechebe.domain.character.service;
 
+import static com.nexters.kekechebe.domain.character.enums.Level.*;
 import static com.nexters.kekechebe.exceptions.StatusCode.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.nexters.kekechebe.domain.character.dto.request.CharacterCreateRequest;
 import com.nexters.kekechebe.domain.character.dto.request.CharacterNameUpdateRequest;
+import com.nexters.kekechebe.domain.character.dto.response.CharacterThumbnailResponse;
 import com.nexters.kekechebe.domain.character.dto.response.CharacterIdResponse;
 import com.nexters.kekechebe.domain.character.dto.response.CharacterListResponse;
 import com.nexters.kekechebe.domain.character.dto.response.CharacterResponse;
@@ -40,7 +42,7 @@ public class CharacterService {
 
         Character character = Character.builder()
             .name(request.getName())
-            .level(1)
+            .level(LEVEL1.getLevel())
             .exp(0)
             .variation(CharacterAsset.Variation.VAR1)
             .shape(request.getShape())
@@ -75,9 +77,18 @@ public class CharacterService {
     public CharacterListResponse getAllCharacterByMember(Member loginMember, Long accessMemberId) {
         Member accessMember = memberRepository.findById(accessMemberId)
             .orElseThrow(() -> new NoResultException("회원을 찾을 수 없습니다."));
-
         Boolean isMe = loginMember.getId().equals(accessMember.getId());
+        return buildCharacterListResponse(accessMemberId, isMe);
+    }
 
+    @Transactional(readOnly = true)
+    public CharacterListResponse getAllCharacter(Long accessMemberId) {
+        memberRepository.findById(accessMemberId).orElseThrow(() -> new NoResultException("회원을 찾을 수 없습니다."));
+        Boolean isMe = false;
+        return buildCharacterListResponse(accessMemberId, isMe);
+    }
+
+    private CharacterListResponse buildCharacterListResponse(Long accessMemberId, Boolean isMe) {
         List<Character> characterList = characterRepository.findAllByMemberId(accessMemberId);
 
         List<CharacterResponse> characterListDto = characterList
@@ -89,6 +100,15 @@ public class CharacterService {
             .characters(characterListDto)
             .isMe(isMe)
             .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<CharacterThumbnailResponse> getAllCharacterThumbnail(Member member) {
+        List<Character> characterList = characterRepository.findAllByMemberId(member.getId());
+        return characterList
+            .stream()
+            .map(CharacterThumbnailResponse::new)
+            .toList();
     }
 
     @Transactional(readOnly = true)
@@ -124,6 +144,4 @@ public class CharacterService {
         }
         characterRepository.deleteById(character.getId());
     }
-
-
 }

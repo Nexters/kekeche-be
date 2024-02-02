@@ -122,6 +122,25 @@ public class CharacterController {
         return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, characterResponse));
     }
 
+    @Operation(summary = "회원의 모든 캐릭터 썸네일 조회", description = "회원의 모든 캐릭터 썸네일을 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+        @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+        @ApiResponse(responseCode = "404", description = "NOT FOUND",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+    })
+    @GetMapping("/thumbnail")
+    public ResponseEntity<DataResponse<List<CharacterThumbnailResponse>>> getCharacterThumbnail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        List<CharacterThumbnailResponse> characterThumbnailList = characterService.getAllCharacterThumbnail(member);
+        return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, characterThumbnailList));
+    }
+
     @Operation(
             summary = "캐릭터 이름 수정",
             description = "캐릭터의 이름을 수정합니다.",

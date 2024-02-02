@@ -50,7 +50,7 @@ public class SecurityConfig {
 
             .authorizeHttpRequests((authorize) -> authorize
                 .requestMatchers("/api/v1/auth/kakao/callback", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/character/user/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/character/member/**").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults())

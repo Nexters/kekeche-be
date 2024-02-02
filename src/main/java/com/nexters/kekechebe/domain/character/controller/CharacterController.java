@@ -1,5 +1,8 @@
 package com.nexters.kekechebe.domain.character.controller;
 
+import java.util.List;
+
+import com.nexters.kekechebe.domain.character.dto.response.CharacterThumbnailResponse;
 import com.nexters.kekechebe.exceptions.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,7 +45,7 @@ public class CharacterController {
     private final CharacterService characterService;
 
     @Operation(
-            summary = "캐릭터 저장",
+            summary = "캐릭터 생성",
             description = "회원이 만든 캐릭터를 저장합니다.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "캐릭터 정보 (이름, 색 id, 모양 id), 아이템 id, 키워드",
@@ -67,7 +70,7 @@ public class CharacterController {
         , @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
         CharacterIdResponse characterIdResponse = characterService.saveCharacter(member, request);
-        return ResponseEntity.ok(new DataResponse<>(StatusCode.CREATED, characterIdResponse));
+        return ResponseEntity.status(StatusCode.CREATED.getCode()).body(new DataResponse<>(StatusCode.CREATED, characterIdResponse));
     }
 
     @Operation(summary = "특정 회원의 모든 캐릭터 조회", description = "특정 회원의 모든 캐릭터를 조회합니다.")
@@ -84,11 +87,16 @@ public class CharacterController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
     })
     @GetMapping( "/member/{memberId}")
-    public ResponseEntity<DataResponse<CharacterListResponse>> getAllCharacterByMember(
+    public ResponseEntity<DataResponse<CharacterListResponse>> getAllCharacter(
         @PathVariable("memberId") Long memberId
         , @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Member loginMember = userDetails.getMember();
-        CharacterListResponse characterListResponse = characterService.getAllCharacterByMember(loginMember, memberId);
+        CharacterListResponse characterListResponse;
+        if (userDetails == null) {
+            characterListResponse = characterService.getAllCharacter(memberId);
+        } else {
+            Member loginMember = userDetails.getMember();
+            characterListResponse = characterService.getAllCharacterByMember(loginMember, memberId);
+        }
         return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, characterListResponse));
     }
 
@@ -112,6 +120,25 @@ public class CharacterController {
         Member member = userDetails.getMember();
         CharacterResponse characterResponse = characterService.getCharacterDetail(member, characterId);
         return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, characterResponse));
+    }
+
+    @Operation(summary = "회원의 모든 캐릭터 썸네일 조회", description = "회원의 모든 캐릭터 썸네일을 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+        @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+        @ApiResponse(responseCode = "404", description = "NOT FOUND",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+    })
+    @GetMapping("/thumbnail")
+    public ResponseEntity<DataResponse<List<CharacterThumbnailResponse>>> getCharacterThumbnail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        List<CharacterThumbnailResponse> characterThumbnailList = characterService.getAllCharacterThumbnail(member);
+        return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, characterThumbnailList));
     }
 
     @Operation(

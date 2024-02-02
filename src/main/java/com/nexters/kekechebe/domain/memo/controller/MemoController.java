@@ -1,5 +1,6 @@
 package com.nexters.kekechebe.domain.memo.controller;
 
+import com.nexters.kekechebe.domain.character.dto.response.CharacterLevelUpResponse;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoCreateRequest;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
@@ -56,9 +57,9 @@ public class MemoController {
     @PostMapping()
     public ResponseEntity<BaseResponse> saveMemo(@RequestBody MemoCreateRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
-        memoService.saveMemo(member, request);
+        CharacterLevelUpResponse characterLevelUp = memoService.saveMemo(member, request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new BaseResponse(StatusCode.CREATED));
+        return ResponseEntity.status(StatusCode.CREATED.getCode()).body(new DataResponse<>(StatusCode.CREATED, characterLevelUp));
     }
 
     @Operation(summary = "모든 기록 조회", description = "회원의 모든 기록을 조회합니다.")

@@ -14,5 +14,5 @@ public enum Item {
     BLANK(5)
     ;
 
-    private final Integer value;
+    private final int value;
 }

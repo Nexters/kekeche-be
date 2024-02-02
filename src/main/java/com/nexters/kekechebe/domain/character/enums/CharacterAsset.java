@@ -36,9 +36,9 @@ public class CharacterAsset {
     @Getter
     @RequiredArgsConstructor
     public enum Variation {
-        VAR1(1, 1, 10),
-        VAR2(2, 11, 20),
-        VAR3(3, 21, 30);
+        VAR1(0, 1, 10),
+        VAR2(1, 11, 20),
+        VAR3(2, 21, 30);
 
         private final Integer index;
         private final Integer levelMin;

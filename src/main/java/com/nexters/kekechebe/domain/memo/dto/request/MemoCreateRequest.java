@@ -7,6 +7,7 @@ import java.util.List;
 @Getter
 public class MemoCreateRequest {
     private long characterId;
+    private String htmlContent;
     private String content;
     private List<String> hashtags;
 }

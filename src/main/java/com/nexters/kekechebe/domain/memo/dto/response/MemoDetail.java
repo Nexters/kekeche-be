@@ -14,6 +14,8 @@ public class MemoDetail {
 
     private CharacterDetail character;
 
+    private String htmlContent;
+
     private String content;
 
     private List<String> hashtags;

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Objects;
 
+import jakarta.persistence.NoResultException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -30,5 +32,10 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ExceptionResponse> handleException(MethodArgumentNotValidException e) {
         return ExceptionResponse.toResponseEntity(HttpStatus.BAD_REQUEST,
                 Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage());
+    }
+
+    @ExceptionHandler(value = {NoResultException.class})
+    protected ResponseEntity<ExceptionResponse> handleException(NoResultException e) {
+        return ExceptionResponse.toResponseEntity(HttpStatus.NOT_FOUND, e.getMessage());
     }
 }

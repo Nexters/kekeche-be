@@ -34,21 +34,37 @@ public class AuthService {
     @Value("${oauth.kakao.redirect-uri}")
     private String redirectUri;
 
+    @Value("${oauth.kakao.character-redirect-uri}")
+    private String characterRedirectUri;
+
     public LoginResponse kakaoLogin(String code, HttpServletResponse response) {
-        String accessToken = getToken(code);
+        String accessToken = getToken(code, redirectUri);
         UserInfoResponse userInfoDto = getKakaoUserInfo(accessToken);
         Member kakaoUser = registerKakaoUserIfNeeded(userInfoDto);
         String createToken =  jwtUtil.createToken(kakaoUser.getEmail());
         // response.addHeader(JwtUtil.AUTHORIZATION_HEADER, createToken);
 
         return LoginResponse.builder()
-            .memberId(kakaoUser.getId())
-            .nickname(kakaoUser.getNickname())
-            .accessToken(createToken)
-            .build();
+                .memberId(kakaoUser.getId())
+                .nickname(kakaoUser.getNickname())
+                .accessToken(createToken)
+                .build();
     }
 
-    private String getToken(String code) {
+    public LoginResponse characterKakaoLogin(String code, HttpServletResponse response) {
+        String accessToken = getToken(code, characterRedirectUri);
+        UserInfoResponse userInfoDto = getKakaoUserInfo(accessToken);
+        Member kakaoUser = registerKakaoUserIfNeeded(userInfoDto);
+        String createToken =  jwtUtil.createToken(kakaoUser.getEmail());
+
+        return LoginResponse.builder()
+                .memberId(kakaoUser.getId())
+                .nickname(kakaoUser.getNickname())
+                .accessToken(createToken)
+                .build();
+    }
+
+    private String getToken(String code, String redirectUri) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -61,10 +77,10 @@ public class AuthService {
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<TokenResponse> response = restTemplate.exchange(
-            "https://kauth.kakao.com/oauth/token",
-            HttpMethod.POST,
-            kakaoTokenRequest,
-            TokenResponse.class
+                "https://kauth.kakao.com/oauth/token",
+                HttpMethod.POST,
+                kakaoTokenRequest,
+                TokenResponse.class
         );
 
         TokenResponse tokenDto = response.getBody();
@@ -82,10 +98,10 @@ public class AuthService {
         HttpEntity<MultiValueMap<String, String>> kakaoUserInfoRequest = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<UserInfoResponse> response = restTemplate.exchange(
-            "https://kapi.kakao.com/v2/user/me",
-            HttpMethod.POST,
-            kakaoUserInfoRequest,
-            UserInfoResponse.class
+                "https://kapi.kakao.com/v2/user/me",
+                HttpMethod.POST,
+                kakaoUserInfoRequest,
+                UserInfoResponse.class
         );
 
         UserInfoResponse userInfoDto = response.getBody();
@@ -103,15 +119,15 @@ public class AuthService {
         Long kakaoId = userInfoDto.getId();
         String email = userInfoDto.getEmail();
         return memberRepository.findByKakaoIdAndEmail(kakaoId, email)
-            .orElseGet(() -> createMember(userInfoDto));
+                .orElseGet(() -> createMember(userInfoDto));
     }
 
     private Member createMember(UserInfoResponse userInfoDto) {
         Member kakaoUser = Member.builder()
-                        .email(userInfoDto.getEmail())
-                        .nickname(userInfoDto.getNickname())
-                        .kakaoId(userInfoDto.getId())
-                        .build();
+                .email(userInfoDto.getEmail())
+                .nickname(userInfoDto.getNickname())
+                .kakaoId(userInfoDto.getId())
+                .build();
         return memberRepository.save(kakaoUser);
     }
 }

@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
             .authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/api/v1/auth/kakao/callback", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/api/v1/auth/kakao/callback", "/api/v1/auth/character-kakao/callback", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/character/member/**").permitAll()
                 .anyRequest().authenticated()
             )

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor(force = true)
 public class MemberResponse {
     private final long memberId;
+    private final String nickname;
     private final long characterCount;
     private final long memoCount;
 }

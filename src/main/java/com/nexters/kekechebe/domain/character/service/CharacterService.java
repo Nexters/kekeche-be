@@ -78,18 +78,18 @@ public class CharacterService {
         Member accessMember = memberRepository.findById(accessMemberId)
             .orElseThrow(() -> new NoResultException("회원을 찾을 수 없습니다."));
         Boolean isMe = loginMember.getId().equals(accessMember.getId());
-        return buildCharacterListResponse(accessMemberId, isMe);
+        return buildCharacterListResponse(accessMember, isMe);
     }
 
     @Transactional(readOnly = true)
     public CharacterListResponse getAllCharacter(Long accessMemberId) {
-        memberRepository.findById(accessMemberId).orElseThrow(() -> new NoResultException("회원을 찾을 수 없습니다."));
+        Member accessMember = memberRepository.findById(accessMemberId).orElseThrow(() -> new NoResultException("회원을 찾을 수 없습니다."));
         Boolean isMe = false;
-        return buildCharacterListResponse(accessMemberId, isMe);
+        return buildCharacterListResponse(accessMember, isMe);
     }
 
-    private CharacterListResponse buildCharacterListResponse(Long accessMemberId, Boolean isMe) {
-        List<Character> characterList = characterRepository.findAllByMemberId(accessMemberId);
+    private CharacterListResponse buildCharacterListResponse(Member accessMember, Boolean isMe) {
+        List<Character> characterList = characterRepository.findAllByMemberId(accessMember.getId());
 
         List<CharacterResponse> characterListDto = characterList
             .stream()
@@ -99,6 +99,7 @@ public class CharacterService {
         return CharacterListResponse.builder()
             .characters(characterListDto)
             .isMe(isMe)
+            .memberNickname(accessMember.getNickname())
             .build();
     }
 

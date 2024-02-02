@@ -23,6 +23,7 @@ public class MemberService {
 
         return MemberResponse.builder()
             .memberId(member.getId())
+            .nickname(member.getNickname())
             .characterCount(characterCount)
             .memoCount(memoCount)
             .build();

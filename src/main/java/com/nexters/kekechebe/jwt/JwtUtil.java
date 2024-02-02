@@ -36,7 +36,7 @@ public class JwtUtil {
     private final UserDetailsServiceImpl userDetailsService;
     public static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 1000L; // 1시간
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 60 * 24 * 30 * 1000L; // 1달
 
     @Value("${jwt.secret.key}")
     private String secretKey;

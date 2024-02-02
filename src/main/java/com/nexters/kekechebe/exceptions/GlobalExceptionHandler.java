@@ -38,4 +38,9 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ExceptionResponse> handleException(NoResultException e) {
         return ExceptionResponse.toResponseEntity(HttpStatus.NOT_FOUND, e.getMessage());
     }
+
+    @ExceptionHandler(value = {Exception.class})
+    protected ResponseEntity<ExceptionResponse> handleException(Exception e) {
+        return ExceptionResponse.toResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
 }

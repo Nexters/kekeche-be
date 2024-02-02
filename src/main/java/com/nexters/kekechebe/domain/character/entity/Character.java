@@ -88,4 +88,12 @@ public class Character extends Timestamped {
     public void updateName(String name) {
         this.name = name;
     }
+
+    public void updateExp(int count) {
+        this.exp += count;
+    }
+
+    public Integer updateLevel(int count) {
+        return this.level += count;
+    }
 }

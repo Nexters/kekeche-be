@@ -1,5 +1,8 @@
 package com.nexters.kekechebe.domain.memo.service;
 
+import static com.nexters.kekechebe.domain.character.enums.Level.*;
+
+import com.nexters.kekechebe.domain.character.dto.response.CharacterLevelUpResponse;
 import com.nexters.kekechebe.domain.character.entity.Character;
 import com.nexters.kekechebe.domain.character.repository.CharacterRepository;
 import com.nexters.kekechebe.domain.hashtag.entity.Hashtag;
@@ -26,13 +29,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemoService {
     private static final int MEMO_LIMIT = 3;
+    private static final int EXP_UP_COUNT = 1;
+    private static final int LEVEL_UP_COUNT = 1;
 
     private final MemoRepository memoRepository;
     private final HashtagRepository hashtagRepository;
     private final CharacterRepository characterRepository;
 
     @Transactional
-    public void saveMemo(Member member, MemoCreateRequest request) {
+    public CharacterLevelUpResponse saveMemo(Member member, MemoCreateRequest request) {
         long characterId = request.getCharacterId();
         String content = request.getContent();
         List<String> hashtags = request.getHashtags();
@@ -49,6 +54,15 @@ public class MemoService {
                 .build();
         memoRepository.save(memo);
 
+        character.updateExp(EXP_UP_COUNT);
+
+        boolean isLevelUp = false;
+        Integer level = character.getLevel();
+        if (checkLevelUp(character)) {
+            level = character.updateLevel(LEVEL_UP_COUNT);
+            isLevelUp = true;
+        }
+
         List<Hashtag> buildHashTags = hashtags.stream()
                 .map(hashtag -> Hashtag.builder()
                         .content(hashtag)
@@ -56,6 +70,8 @@ public class MemoService {
                         .build())
                 .toList();
         hashtagRepository.saveAll(buildHashTags);
+
+        return CharacterLevelUpResponse.from(character, level, isLevelUp);
     }
 
     public MemoPage getAllMemos(Member member, Pageable pageable) {
@@ -116,5 +132,9 @@ public class MemoService {
         if (memoCnt >= MEMO_LIMIT) {
             throw new IllegalStateException("캐릭터당 허용된 기록 개수를 초과하였습니다.");
         }
+    }
+
+    private boolean checkLevelUp(Character character) {
+        return character.getLevel() < getUpdatedLevel(character.getExp());
     }
 }

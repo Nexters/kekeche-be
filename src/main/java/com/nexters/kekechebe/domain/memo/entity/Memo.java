@@ -52,10 +52,12 @@ public class Memo extends Timestamped {
     @Builder
     public Memo(
             String content,
+            String htmlContent,
             Member member,
             Character character
     ) {
         this.content = content;
+        this.htmlContent = htmlContent;
         this.member = member;
         this.character = character;
     }

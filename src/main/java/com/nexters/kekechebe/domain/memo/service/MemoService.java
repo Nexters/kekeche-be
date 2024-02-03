@@ -40,6 +40,7 @@ public class MemoService {
     public CharacterLevelUpResponse saveMemo(Member member, MemoCreateRequest request) {
         long characterId = request.getCharacterId();
         String content = request.getContent();
+        String htmlContent = request.getHtmlContent();
         List<String> hashtags = request.getHashtags();
 
         Character character = characterRepository.findById(characterId)
@@ -49,6 +50,7 @@ public class MemoService {
 
         Memo memo = Memo.builder()
                 .content(content)
+                .htmlContent(htmlContent)
                 .member(member)
                 .character(character)
                 .build();

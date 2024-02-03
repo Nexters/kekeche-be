@@ -29,6 +29,9 @@ public class Memo extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "html_content", nullable = false)
+    private String htmlContent;
+
     @Column(name = "content", nullable = false)
     private String content;
 
@@ -57,7 +60,8 @@ public class Memo extends Timestamped {
         this.character = character;
     }
 
-    public void updateContent(String content) {
+    public void updateContent(String content, String htmlContent) {
+        this.htmlContent = htmlContent;
         this.content = content;
         this.isModified = true;
     }
@@ -65,6 +69,7 @@ public class Memo extends Timestamped {
     public MemoDetail toMemoDetail() {
         return MemoDetail.builder()
                 .id(id)
+                .htmlContent(htmlContent)
                 .content(content)
                 .character(CharacterDetail.builder()
                         .id(character.getId())

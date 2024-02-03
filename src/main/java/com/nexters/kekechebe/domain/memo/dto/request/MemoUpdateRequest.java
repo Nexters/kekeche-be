@@ -6,6 +6,7 @@ import java.util.List;
 
 @Getter
 public class MemoUpdateRequest {
+    private String htmlContent;
     private String content;
     private List<String> hashtags;
 }

@@ -1,12 +1,20 @@
 package com.nexters.kekechebe.domain.auth.controller;
 
+import com.nexters.kekechebe.domain.auth.dto.response.LoginResponse;
+import com.nexters.kekechebe.domain.auth.service.KakaoAuthService;
+import com.nexters.kekechebe.dto.DataResponse;
 import com.nexters.kekechebe.exceptions.ExceptionResponse;
+import com.nexters.kekechebe.exceptions.StatusCode;
+import com.nexters.kekechebe.jwt.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -15,23 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nexters.kekechebe.domain.auth.service.AuthService;
-import com.nexters.kekechebe.domain.auth.dto.response.LoginResponse;
-import com.nexters.kekechebe.dto.BaseResponse;
-import com.nexters.kekechebe.dto.DataResponse;
-import com.nexters.kekechebe.exceptions.StatusCode;
-import com.nexters.kekechebe.jwt.JwtUtil;
-
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class AuthController {
-    private final AuthService authService;
+    private final KakaoAuthService kakaoAuthService;
 
     @Operation(summary = "카카오 로그인", description = "카카오 로그인을 진행합니다.")
     @Parameter(name = "code", description = "카카오 인가 코드", example = "QTxoN3oYZqrOPLbXROVx-nAtvpDzk6ph-1Zip1Vf3kdLBiX49ASx9kkIdQIKPXNNAAABjVozDgQq3eF1vjqPRg", required = true)
@@ -50,7 +47,7 @@ public class AuthController {
     public ResponseEntity<DataResponse<LoginResponse>> kakaoLogin(@RequestParam(value = "code") String code, HttpServletResponse response) {
         log.info("Auth Controller >> code : {}", code);
 
-        LoginResponse loginResponse = authService.kakaoLogin(code, response);
+        LoginResponse loginResponse = kakaoAuthService.login(code);
         String createToken = loginResponse.getAccessToken();
 
         ResponseCookie rfCookie = ResponseCookie.from(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7))
@@ -81,7 +78,7 @@ public class AuthController {
     public ResponseEntity<DataResponse<LoginResponse>> characterKakaoLogin(@RequestParam(value = "code") String code, HttpServletResponse response) {
         log.info("Auth Controller >> code : {}", code);
 
-        LoginResponse loginResponse = authService.characterKakaoLogin(code, response);
+        LoginResponse loginResponse = kakaoAuthService.characterKakaoLogin(code, response);
         String createToken = loginResponse.getAccessToken();
 
         ResponseCookie rfCookie = ResponseCookie.from(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7))

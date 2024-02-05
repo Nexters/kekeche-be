@@ -1,29 +1,25 @@
 package com.nexters.kekechebe.domain.member.controller;
 
 import com.nexters.kekechebe.domain.member.dto.response.MemberResponse;
+import com.nexters.kekechebe.domain.member.entity.Member;
+import com.nexters.kekechebe.domain.member.service.MemberService;
+import com.nexters.kekechebe.dto.DataResponse;
 import com.nexters.kekechebe.exceptions.ExceptionResponse;
+import com.nexters.kekechebe.exceptions.StatusCode;
+import com.nexters.kekechebe.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.nexters.kekechebe.domain.member.entity.Member;
-import com.nexters.kekechebe.domain.member.service.MemberService;
-import com.nexters.kekechebe.dto.BaseResponse;
-import com.nexters.kekechebe.dto.DataResponse;
-import com.nexters.kekechebe.exceptions.StatusCode;
-import com.nexters.kekechebe.security.UserDetailsImpl;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController

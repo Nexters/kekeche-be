@@ -6,7 +6,9 @@ import com.nexters.kekechebe.domain.character.enums.Level;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-public class LevelUtil {
+public final class LevelUtil {
+    private LevelUtil(){}
+
     public static LevelInfo getLevelInfo(int totalExp) {
         for (Level level : Level.values()) {
             if (totalExp < level.getExpMax()) {

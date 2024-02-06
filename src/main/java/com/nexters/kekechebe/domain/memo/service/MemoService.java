@@ -1,6 +1,6 @@
 package com.nexters.kekechebe.domain.memo.service;
 
-import static com.nexters.kekechebe.domain.character.enums.Level.*;
+import static com.nexters.kekechebe.util.character.LevelUtil.*;
 
 import com.nexters.kekechebe.domain.character.dto.response.CharacterLevelUpResponse;
 import com.nexters.kekechebe.domain.character.entity.Character;
@@ -13,6 +13,7 @@ import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoPage;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
+import com.nexters.kekechebe.util.character.LevelUtil;
 import com.nexters.kekechebe.util.time.TimeUtil;
 import com.nexters.kekechebe.util.time.Today;
 import jakarta.persistence.NoResultException;
@@ -59,9 +60,9 @@ public class MemoService {
         character.updateExp(EXP_UP_COUNT);
 
         boolean isLevelUp = false;
-        Integer level = character.getLevel();
         if (checkLevelUp(character)) {
-            level = character.updateLevel(LEVEL_UP_COUNT);
+            Integer nextLevel = character.updateLevel(LEVEL_UP_COUNT);
+            character.updateVariation(getVariationByLevel(nextLevel));
             isLevelUp = true;
         }
 
@@ -73,7 +74,7 @@ public class MemoService {
                 .toList();
         hashtagRepository.saveAll(buildHashTags);
 
-        return CharacterLevelUpResponse.from(character, level, isLevelUp);
+        return CharacterLevelUpResponse.from(character, isLevelUp);
     }
 
     public MemoPage getAllMemos(Member member, Pageable pageable) {
@@ -138,6 +139,7 @@ public class MemoService {
     }
 
     private boolean checkLevelUp(Character character) {
-        return character.getLevel() < getUpdatedLevel(character.getExp());
+        LevelUtil.LevelInfo getLevelInfo = LevelUtil.getLevelInfo(character.getExp());
+        return character.getLevel() < getLevelInfo.getUpdatedLevel();
     }
 }

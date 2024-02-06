@@ -6,6 +6,8 @@ import static com.nexters.kekechebe.util.UrlMaker.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nexters.kekechebe.domain.character.entity.Character;
+import com.nexters.kekechebe.util.character.LevelUtil;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,8 +34,8 @@ public class CharacterResponse {
         this.name = character.getName();
         this.level = character.getLevel();
         this.totalExp = character.getExp();
-        this.currentExp = getCurrentExpThreshold(character.getExp());
-        this.nextExp = getNextExpThreshold(character.getExp());
+        this.currentExp = getLevelInfo(character.getExp()).getCurrentExpThreshold();
+        this.nextExp = getLevelInfo(character.getExp()).getNextExpThreshold();
         this.characterImage = madeCharacterUrl(character);
         this.itemImage = madeItemUrl(character);
         this.keywords = parseKeywords(character.getKeywords());
@@ -45,5 +47,9 @@ public class CharacterResponse {
         Type listType = new TypeToken<List<Integer>>() {}.getType();
 
         return gson.fromJson(keywords, listType);
+    }
+
+    private LevelUtil.LevelInfo getLevelInfo(Integer exp) {
+        return LevelUtil.getLevelInfo(exp);
     }
 }

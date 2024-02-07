@@ -78,7 +78,7 @@ public class AuthController {
     public ResponseEntity<DataResponse<LoginResponse>> characterKakaoLogin(@RequestParam(value = "code") String code, HttpServletResponse response) {
         log.info("Auth Controller >> code : {}", code);
 
-        LoginResponse loginResponse = kakaoAuthService.characterKakaoLogin(code, response);
+        LoginResponse loginResponse = kakaoAuthService.characterLogin(code);
         String createToken = loginResponse.getAccessToken();
 
         ResponseCookie rfCookie = ResponseCookie.from(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7))

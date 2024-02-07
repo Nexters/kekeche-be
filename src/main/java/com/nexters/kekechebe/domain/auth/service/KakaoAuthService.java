@@ -29,20 +29,15 @@ public class KakaoAuthService implements AuthService {
 
     @Override
     public LoginResponse login(String code) {
-        String accessToken = kakaoAuthClient.getAccessToken(code, redirectUri);
-        UserInfoResponse userInfoDto = kakaoAuthClient.getUserInfo(accessToken);
-        Member kakaoUser = registerKakaoUserIfNeeded(userInfoDto);
-        String createToken =  jwtUtil.createToken(kakaoUser.getEmail());
-
-        return LoginResponse.builder()
-                .memberId(kakaoUser.getId())
-                .nickname(kakaoUser.getNickname())
-                .accessToken(createToken)
-                .build();
+        return kakaoLogin(code, redirectUri);
     }
 
-    public LoginResponse characterKakaoLogin(String code, HttpServletResponse response) {
-        String accessToken = kakaoAuthClient.getAccessToken(code, characterRedirectUri);
+    public LoginResponse characterLogin(String code) {
+        return kakaoLogin(code, characterRedirectUri);
+    }
+
+    private LoginResponse kakaoLogin(String code, String redirectUri) {
+        String accessToken = kakaoAuthClient.getAccessToken(code, redirectUri);
         UserInfoResponse userInfoDto = kakaoAuthClient.getUserInfo(accessToken);
         Member kakaoUser = registerKakaoUserIfNeeded(userInfoDto);
         String createToken =  jwtUtil.createToken(kakaoUser.getEmail());

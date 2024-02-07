@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 public final class LevelUtil {
+    private static final int MAXIMUM_LEVEL = 99;
     private LevelUtil(){}
 
     public static LevelInfo getLevelInfo(int totalExp) {
@@ -19,7 +20,7 @@ public final class LevelUtil {
         }
         Level lastLevel = Level.values()[Level.values().length - 1];
         int currentExpThreshold = totalExp - lastLevel.getExpMax();
-        int nextExpThreshold = 99; // 최대 레벨 99
+        int nextExpThreshold = MAXIMUM_LEVEL; // 최대 레벨 99
         return new LevelInfo(currentExpThreshold, nextExpThreshold, lastLevel.getLevel());
     }
 

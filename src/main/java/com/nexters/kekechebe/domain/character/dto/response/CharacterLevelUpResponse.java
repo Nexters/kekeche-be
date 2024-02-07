@@ -23,7 +23,7 @@ public class CharacterLevelUpResponse {
     private String itemImage;
     private List<Integer> keywords;
 
-    public static CharacterLevelUpResponse from(Character character, Integer level, boolean isLevelUp) {
+    public static CharacterLevelUpResponse from(Character character, boolean isLevelUp) {
         return CharacterLevelUpResponse.builder()
             .id(character.getId())
             .name(character.getName())

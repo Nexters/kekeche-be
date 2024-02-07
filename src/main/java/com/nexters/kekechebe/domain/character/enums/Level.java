@@ -13,31 +13,4 @@ public enum Level {
     private final Integer level;
     private final Integer expMin;
     private final Integer expMax;
-
-    public static Integer getNextExpThreshold(int totalExp) {
-        for (Level level : values()) {
-            if (totalExp < level.getExpMax()) {
-                return level.getExpMax() - level.getExpMin();
-            }
-        }
-        return totalExp;
-    }
-
-    public static Integer getCurrentExpThreshold(int totalExp) {
-        for (Level level : values()) {
-            if (totalExp < level.getExpMax()) {
-                return totalExp - level.getExpMin();
-            }
-        }
-        return totalExp;
-    }
-
-    public static Integer getUpdatedLevel(int totalExp) {
-        for (Level level : values()) {
-            if (totalExp < level.getExpMax()) {
-                return level.getLevel();
-            }
-        }
-        return totalExp;
-    }
 }

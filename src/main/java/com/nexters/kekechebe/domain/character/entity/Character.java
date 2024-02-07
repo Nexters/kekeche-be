@@ -96,4 +96,8 @@ public class Character extends Timestamped {
     public Integer updateLevel(int count) {
         return this.level += count;
     }
+
+    public CharacterAsset.Variation updateVariation(CharacterAsset.Variation variation) {
+        return this.variation = variation;
+    }
 }

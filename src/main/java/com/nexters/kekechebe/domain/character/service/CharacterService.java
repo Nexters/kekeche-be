@@ -1,10 +1,11 @@
 package com.nexters.kekechebe.domain.character.service;
 
+import static com.nexters.kekechebe.domain.character.enums.CharacterAsset.*;
+import static com.nexters.kekechebe.domain.character.enums.Keyword.*;
 import static com.nexters.kekechebe.domain.character.enums.Level.*;
 import static com.nexters.kekechebe.exceptions.StatusCode.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,6 @@ import com.nexters.kekechebe.domain.character.dto.response.CharacterListResponse
 import com.nexters.kekechebe.domain.character.dto.response.CharacterResponse;
 import com.nexters.kekechebe.domain.character.entity.Character;
 import com.nexters.kekechebe.domain.character.enums.CharacterAsset;
-import com.nexters.kekechebe.domain.character.enums.Keyword;
 import com.nexters.kekechebe.domain.character.repository.CharacterRepository;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.repository.MemberRepository;
@@ -36,19 +36,18 @@ public class CharacterService {
 
     @Transactional
     public CharacterIdResponse saveCharacter(Member member, CharacterCreateRequest request) {
+        validateCharacterAsset(request);
         validateCharacterLimit(member);
-
-        String keywordParsing = convertKeywordListToString(request.getKeywords());
 
         Character character = Character.builder()
             .name(request.getName())
             .level(LEVEL1.getLevel())
             .exp(0)
             .variation(CharacterAsset.Variation.VAR1)
-            .shape(request.getShape())
-            .color(request.getColor())
-            .item(request.getItem())
-            .keywords(keywordParsing)
+            .shapeIdx(request.getShapeIdx())
+            .colorIdx(request.getColorIdx())
+            .itemIdx(request.getItemIdx())
+            .keywords(request.getKeywords().toString())
             .member(member)
             .build();
 
@@ -59,18 +58,26 @@ public class CharacterService {
             .build();
     }
 
+    private void validateCharacterAsset(CharacterCreateRequest request) {
+        if (!isShapeValid(request.getShapeIdx())) {
+            throw new IllegalArgumentException("잘못된 캐릭터 에셋 입니다.(body)");
+        }
+        if (!isColorValid(request.getColorIdx())) {
+            throw new IllegalArgumentException("잘못된 캐릭터 에셋 입니다.(color)");
+        }
+        if (!isItemValid(request.getItemIdx())) {
+            throw new IllegalArgumentException("잘못된 캐릭터 에셋 입니다.(item)");
+        }
+        if (!areKeywordsValid(request.getKeywords())) {
+            throw new IllegalArgumentException("잘못된 키워드 입니다.");
+        }
+    }
+
     private void validateCharacterLimit(Member member) {
         int characterCount = characterRepository.countCharacterByMember(member);
         if (characterCount >= CHARACTER_LIMIT) {
             throw new IllegalStateException("허용된 캐릭터 개수를 초과하였습니다.");
         }
-    }
-
-    private String convertKeywordListToString(List<Keyword> keywordList) {
-        return keywordList.stream()
-            .map(Keyword::getIndex)
-            .map(String::valueOf)
-            .collect(Collectors.joining(",", "[", "]"));
     }
 
     @Transactional(readOnly = true)

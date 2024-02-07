@@ -1,7 +1,6 @@
 package com.nexters.kekechebe.domain.character.entity;
 
 import com.nexters.kekechebe.domain.character.enums.CharacterAsset;
-import com.nexters.kekechebe.domain.character.enums.Item;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.util.Timestamped;
@@ -31,26 +30,23 @@ public class Character extends Timestamped {
     private String name;
 
     @Column(name = "level", nullable = false)
-    private int level;
+    private Integer level;
 
     @Column(name = "exp", nullable = false)
-    private int exp;
+    private Integer exp;
 
     @Column(name = "variation", nullable = false)
     @Enumerated(EnumType.STRING)
     private CharacterAsset.Variation variation;
 
-    @Column(name = "shape", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CharacterAsset.Shape shape;
+    @Column(name = "shape_idx", nullable = false)
+    private Integer shapeIdx;
 
-    @Column(name = "color", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CharacterAsset.Color color;
+    @Column(name = "color_idx", nullable = false)
+    private Integer colorIdx;
 
-    @Column(name = "item", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Item item;
+    @Column(name = "item_idx", nullable = false)
+    private Integer itemIdx;
 
     @Column(name = "keywords")
     private String keywords;
@@ -65,12 +61,12 @@ public class Character extends Timestamped {
     @Builder
     public Character(
             String name,
-            int level,
-            int exp,
+            Integer level,
+            Integer exp,
             CharacterAsset.Variation variation,
-            CharacterAsset.Shape shape,
-            CharacterAsset.Color color,
-            Item item,
+            Integer shapeIdx,
+            Integer colorIdx,
+            Integer itemIdx,
             String keywords,
             Member member
     ) {
@@ -78,9 +74,9 @@ public class Character extends Timestamped {
         this.level = level;
         this.exp = exp;
         this.variation = variation;
-        this.shape = shape;
-        this.color = color;
-        this.item = item;
+        this.shapeIdx = shapeIdx;
+        this.colorIdx = colorIdx;
+        this.itemIdx = itemIdx;
         this.keywords = keywords;
         this.member = member;
     }
@@ -97,7 +93,7 @@ public class Character extends Timestamped {
         return this.level += count;
     }
 
-    public CharacterAsset.Variation updateVariation(CharacterAsset.Variation variation) {
-        return this.variation = variation;
+    public void updateVariation(CharacterAsset.Variation variation) {
+        this.variation = variation;
     }
 }

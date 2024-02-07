@@ -12,11 +12,11 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
     private final CharacterRepository characterRepository;
     private final MemoRepository memoRepository;
 
-    @Transactional(readOnly = true)
     public MemberResponse getMemberInfo(Member member) {
         long characterCount = characterRepository.countCharacterByMember(member);
         long memoCount = memoRepository.countMemoByMember(member);

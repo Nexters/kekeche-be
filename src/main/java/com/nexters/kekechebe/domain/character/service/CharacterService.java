@@ -36,7 +36,7 @@ public class CharacterService {
 
     @Transactional
     public CharacterIdResponse saveCharacter(Member member, CharacterCreateRequest request) {
-        validateCharacterAsset(request);
+        CharacterAsset.validateCharacterAsset(request);
         validateCharacterLimit(member);
 
         Character character = Character.builder()
@@ -56,21 +56,6 @@ public class CharacterService {
         return CharacterIdResponse.builder()
             .id(saveCharacter.getId())
             .build();
-    }
-
-    private void validateCharacterAsset(CharacterCreateRequest request) {
-        if (!isShapeValid(request.getShapeIdx())) {
-            throw new IllegalArgumentException("잘못된 캐릭터 에셋 입니다.(body)");
-        }
-        if (!isColorValid(request.getColorIdx())) {
-            throw new IllegalArgumentException("잘못된 캐릭터 에셋 입니다.(color)");
-        }
-        if (!isItemValid(request.getItemIdx())) {
-            throw new IllegalArgumentException("잘못된 캐릭터 에셋 입니다.(item)");
-        }
-        if (!areKeywordsValid(request.getKeywords())) {
-            throw new IllegalArgumentException("잘못된 키워드 입니다.");
-        }
     }
 
     private void validateCharacterLimit(Member member) {

@@ -1,15 +1,14 @@
 package com.nexters.kekechebe.domain.character.enums;
 
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 public class CharacterAsset {
-    private static final List<String> SHAPE_LIST = Arrays.asList("Circle", "Square", "Triangle");
-    private static final List<String> COLOR_LIST = Arrays.asList("Red", "Blue", "Yellow", "Purple", "Green", "Pink");
-    private static final List<String> ITEM_LIST = Arrays.asList("Laptop", "Exercise", "Money", "Pencil", "Book");
+    private static final List<String> SHAPE_LIST = List.of("Circle", "Square", "Triangle");
+    private static final List<String> COLOR_LIST = List.of("Red", "Blue", "Yellow", "Purple", "Green", "Pink");
+    private static final List<String> ITEM_LIST = List.of("Laptop", "Exercise", "Money", "Pencil", "Book");
 
     public static boolean isValidIndex(int index, List<String> list) {
         return index >= 0 && index < list.size();

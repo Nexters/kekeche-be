@@ -1,36 +1,47 @@
 package com.nexters.kekechebe.domain.character.enums;
 
+import java.util.List;
+
+import com.nexters.kekechebe.domain.character.dto.request.CharacterCreateRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
-@RequiredArgsConstructor
+import static com.nexters.kekechebe.domain.character.enums.Keyword.areKeywordsValid;
+
 public class CharacterAsset {
-    private Shape shape;
-    private Color color;
-    private Variation variation;
+    private static final List<String> SHAPE_LIST = List.of("Circle", "Square", "Triangle");
+    private static final List<String> COLOR_LIST = List.of("Red", "Blue", "Yellow", "Purple", "Green", "Pink");
+    private static final List<String> ITEM_LIST = List.of("Laptop", "Exercise", "Money", "Pencil", "Book");
 
-    @Getter
-    @RequiredArgsConstructor
-    public enum Shape {
-        CIRCLE(0),
-        SQUARE(1),
-        TRIANGLE(2);
-
-        private final Integer value;
+    private static boolean isValidIndex(int index, List<String> list) {
+        return index >= 0 && index < list.size();
     }
 
-    @Getter
-    @RequiredArgsConstructor
-    public enum Color {
-        RED(0),
-        BLUE(1),
-        YELLOW(2),
-        PURPLE(3),
-        GREEN(4),
-        PINK(5);
+    private static boolean isShapeValid(int shapeIdx) {
+        return isValidIndex(shapeIdx, SHAPE_LIST);
+    }
 
-        private final Integer value;
+    private static boolean isColorValid(int colorIdx) {
+        return isValidIndex(colorIdx, COLOR_LIST);
+    }
+
+    private static boolean isItemValid(int itemIdx) {
+        return isValidIndex(itemIdx, ITEM_LIST);
+    }
+
+    public static void validateCharacterAsset(CharacterCreateRequest request) {
+        if (!isShapeValid(request.getShapeIdx())) {
+            throw new IllegalArgumentException("잘못된 캐릭터 에셋 입니다.(body)");
+        }
+        if (!isColorValid(request.getColorIdx())) {
+            throw new IllegalArgumentException("잘못된 캐릭터 에셋 입니다.(color)");
+        }
+        if (!isItemValid(request.getItemIdx())) {
+            throw new IllegalArgumentException("잘못된 캐릭터 에셋 입니다.(item)");
+        }
+        if (!areKeywordsValid(request.getKeywords())) {
+            throw new IllegalArgumentException("잘못된 키워드 입니다.");
+        }
     }
 
     @Getter

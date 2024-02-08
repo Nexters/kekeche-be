@@ -1,36 +1,30 @@
 package com.nexters.kekechebe.domain.character.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
-@RequiredArgsConstructor
 public class CharacterAsset {
-    private Shape shape;
-    private Color color;
-    private Variation variation;
+    private static final List<String> SHAPE_LIST = Arrays.asList("Circle", "Square", "Triangle");
+    private static final List<String> COLOR_LIST = Arrays.asList("Red", "Blue", "Yellow", "Purple", "Green", "Pink");
+    private static final List<String> ITEM_LIST = Arrays.asList("Laptop", "Exercise", "Money", "Pencil", "Book");
 
-    @Getter
-    @RequiredArgsConstructor
-    public enum Shape {
-        CIRCLE(0),
-        SQUARE(1),
-        TRIANGLE(2);
-
-        private final Integer value;
+    public static boolean isValidIndex(int index, List<String> list) {
+        return index >= 0 && index < list.size();
     }
 
-    @Getter
-    @RequiredArgsConstructor
-    public enum Color {
-        RED(0),
-        BLUE(1),
-        YELLOW(2),
-        PURPLE(3),
-        GREEN(4),
-        PINK(5);
+    public static boolean isShapeValid(int shapeIdx) {
+        return isValidIndex(shapeIdx, SHAPE_LIST);
+    }
 
-        private final Integer value;
+    public static boolean isColorValid(int colorIdx) {
+        return isValidIndex(colorIdx, COLOR_LIST);
+    }
+
+    public static boolean isItemValid(int itemIdx) {
+        return isValidIndex(itemIdx, ITEM_LIST);
     }
 
     @Getter

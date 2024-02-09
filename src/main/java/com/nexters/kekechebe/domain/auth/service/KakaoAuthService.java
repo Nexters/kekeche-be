@@ -7,14 +7,15 @@ import com.nexters.kekechebe.domain.auth.dto.response.UserInfoResponse;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.repository.MemberRepository;
 import com.nexters.kekechebe.jwt.JwtUtil;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class KakaoAuthService implements AuthService {
     private final MemberRepository memberRepository;
@@ -28,10 +29,12 @@ public class KakaoAuthService implements AuthService {
     private String characterRedirectUri;
 
     @Override
+    @Transactional
     public LoginResponse login(String code) {
         return kakaoLogin(code, redirectUri);
     }
 
+    @Transactional
     public LoginResponse characterLogin(String code) {
         return kakaoLogin(code, characterRedirectUri);
     }

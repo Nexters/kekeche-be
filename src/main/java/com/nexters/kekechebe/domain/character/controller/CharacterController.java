@@ -35,6 +35,7 @@ import com.nexters.kekechebe.dto.DataResponse;
 import com.nexters.kekechebe.exceptions.StatusCode;
 import com.nexters.kekechebe.security.UserDetailsImpl;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -66,7 +67,7 @@ public class CharacterController {
     })
     @PostMapping
     public ResponseEntity<BaseResponse> saveCharacter(
-        @RequestBody CharacterCreateRequest request
+        @RequestBody @Valid CharacterCreateRequest request
         , @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
         CharacterIdResponse characterIdResponse = characterService.saveCharacter(member, request);

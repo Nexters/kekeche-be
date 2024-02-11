@@ -12,6 +12,7 @@ public class CharacterAsset {
     private static final List<String> SHAPE_LIST = List.of("Circle", "Square", "Triangle");
     private static final List<String> COLOR_LIST = List.of("Red", "Blue", "Yellow", "Purple", "Green", "Pink");
     private static final List<String> ITEM_LIST = List.of("Laptop", "Exercise", "Money", "Pencil", "Book");
+    public static final int NO_ITEM = -1;
 
     private static boolean isValidIndex(int index, List<String> list) {
         return index >= 0 && index < list.size();
@@ -26,7 +27,7 @@ public class CharacterAsset {
     }
 
     private static boolean isItemValid(int itemIdx) {
-        return isValidIndex(itemIdx, ITEM_LIST);
+        return itemIdx == NO_ITEM || isValidIndex(itemIdx, ITEM_LIST);
     }
 
     public static void validateCharacterAsset(CharacterCreateRequest request) {

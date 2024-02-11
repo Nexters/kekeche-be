@@ -160,4 +160,18 @@ public class CharacterService {
                 .specialties(specialtyDetails)
                 .build();
     }
+
+    @Transactional
+    public void deleteSpecialty(Member member, Long characterId, Long specialtyId) {
+        Character character = characterRepository.findById(characterId)
+                .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
+        Specialty specialty = specialtyRepository.findById(specialtyId)
+                .orElseThrow(() -> new NoResultException("주특기를 찾을 수 없습니다."));
+
+        if (!member.getId().equals(character.getMember().getId())) {
+            throw new CustomException(TOKEN_UNAUTHORIZED);
+        }
+
+        specialtyRepository.delete(specialty);
+    }
 }

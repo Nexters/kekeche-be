@@ -5,6 +5,7 @@ import static com.nexters.kekechebe.util.UrlMaker.*;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nexters.kekechebe.domain.character.entity.Character;
@@ -20,6 +21,7 @@ public class CharacterLevelUpResponse {
     private Integer level;
     private Boolean isLevelUp;
     private String characterImage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String itemImage;
     private List<Integer> keywords;
 

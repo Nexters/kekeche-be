@@ -19,7 +19,7 @@ public class UrlMaker {
     public static String madeItemUrl(Character character) {
         Integer itemValue = character.getItemIdx();
         if (itemValue == NO_ITEM) {
-            return "";
+            return null;
         }
         String prefix = "item";
         String item = String.valueOf(itemValue);

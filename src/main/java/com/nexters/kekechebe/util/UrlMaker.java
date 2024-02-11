@@ -12,7 +12,7 @@ public class UrlMaker {
         String shape = String.valueOf(character.getShapeIdx());
         String variation = character.getVariation().getIndex().toString();
         String color = String.valueOf(character.getColorIdx());
-        String png = ".png";
+        String png = ".webp";
         return String.format("%s/%s/%s/%s/%s%s", BASE_URL, prefix, shape, variation, color, png);
     }
 
@@ -23,7 +23,7 @@ public class UrlMaker {
         }
         String prefix = "item";
         String item = String.valueOf(itemValue);
-        String png = ".png";
+        String png = ".webp";
         return String.format("%s/%s/%s%s", BASE_URL, prefix, item, png);
     }
 }

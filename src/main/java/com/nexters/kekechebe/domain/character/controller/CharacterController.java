@@ -2,7 +2,8 @@ package com.nexters.kekechebe.domain.character.controller;
 
 import java.util.List;
 
-import com.nexters.kekechebe.domain.character.dto.response.CharacterThumbnailResponse;
+import com.nexters.kekechebe.domain.character.dto.request.SpecialtyCreateRequest;
+import com.nexters.kekechebe.domain.character.dto.response.*;
 import com.nexters.kekechebe.exceptions.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,9 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nexters.kekechebe.domain.character.dto.request.CharacterCreateRequest;
 import com.nexters.kekechebe.domain.character.dto.request.CharacterNameUpdateRequest;
-import com.nexters.kekechebe.domain.character.dto.response.CharacterIdResponse;
-import com.nexters.kekechebe.domain.character.dto.response.CharacterListResponse;
-import com.nexters.kekechebe.domain.character.dto.response.CharacterResponse;
 import com.nexters.kekechebe.domain.character.service.CharacterService;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.dto.BaseResponse;
@@ -187,12 +185,67 @@ public class CharacterController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
     })
-    @DeleteMapping("{characterId}")
+    @DeleteMapping("/{characterId}")
     public ResponseEntity<BaseResponse> deleteCharacter(
         @PathVariable("characterId") Long characterId
         , @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
         characterService.deleteCharacter(member, characterId);
+        return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(StatusCode.OK));
+    }
+
+    @Operation(
+            summary = "캐릭터 주특기 저장",
+            description = "캐릭터의 주특기를 저장합니다.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "주특기 정보(주특기 이름) 리스트 (1개 이상)",
+                    required = true
+            )
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "CREATED",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+    })
+    @PostMapping("/{characterId}/specialty")
+    public ResponseEntity<DataResponse<SpecialtyResponse>> saveSpecialty(
+            @PathVariable("characterId") Long characterId,
+            @RequestBody @Valid SpecialtyCreateRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        SpecialtyResponse specialtyResponse = characterService.saveSpecialty(member, characterId, request);
+        return ResponseEntity.status(StatusCode.CREATED.getCode()).body(new DataResponse<>(StatusCode.CREATED, specialtyResponse));
+    }
+
+    @Operation(summary = "주특기 삭제", description = "캐릭터의 주특기를 삭제합니다.")
+    @Parameter(name = "characterId", description = "삭제할 주특기를 가진 캐릭터의 id", example = "12", required = true)
+    @Parameter(name = "specialtyId", description = "삭제할 주특기의 id", example = "5", required = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+    })
+    @DeleteMapping("/{characterId}/specialty/{specialtyId}")
+    public ResponseEntity<BaseResponse> deleteSpecialty(
+            @PathVariable("characterId") Long characterId,
+            @PathVariable("specialtyId") Long specialtyId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        characterService.deleteSpecialty(member, characterId, specialtyId);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(StatusCode.OK));
     }
 }

@@ -1,8 +1,8 @@
 package com.nexters.kekechebe.domain.character.dto.response;
 
-import static com.nexters.kekechebe.domain.character.enums.Level.*;
 import static com.nexters.kekechebe.util.UrlMaker.*;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nexters.kekechebe.domain.character.entity.Character;
@@ -26,6 +26,7 @@ public class CharacterResponse {
     private Integer currentExp;
     private Integer nextExp;
     private String characterImage;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String itemImage;
     private List<Integer> keywords;
 

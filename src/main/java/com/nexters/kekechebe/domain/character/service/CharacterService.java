@@ -1,30 +1,27 @@
 package com.nexters.kekechebe.domain.character.service;
 
-import static com.nexters.kekechebe.domain.character.enums.CharacterAsset.*;
-import static com.nexters.kekechebe.domain.character.enums.Keyword.*;
-import static com.nexters.kekechebe.domain.character.enums.Level.*;
-import static com.nexters.kekechebe.exceptions.StatusCode.*;
-
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.nexters.kekechebe.domain.character.dto.request.CharacterCreateRequest;
 import com.nexters.kekechebe.domain.character.dto.request.CharacterNameUpdateRequest;
-import com.nexters.kekechebe.domain.character.dto.response.CharacterThumbnailResponse;
-import com.nexters.kekechebe.domain.character.dto.response.CharacterIdResponse;
-import com.nexters.kekechebe.domain.character.dto.response.CharacterListResponse;
-import com.nexters.kekechebe.domain.character.dto.response.CharacterResponse;
+import com.nexters.kekechebe.domain.character.dto.request.SpecialtyCreateRequest;
+import com.nexters.kekechebe.domain.character.dto.request.SpecialtyInfo;
+import com.nexters.kekechebe.domain.character.dto.response.*;
 import com.nexters.kekechebe.domain.character.entity.Character;
 import com.nexters.kekechebe.domain.character.enums.CharacterAsset;
 import com.nexters.kekechebe.domain.character.repository.CharacterRepository;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.repository.MemberRepository;
+import com.nexters.kekechebe.domain.specialty.entity.Specialty;
+import com.nexters.kekechebe.domain.specialty.repository.SpecialtyRepository;
 import com.nexters.kekechebe.exceptions.CustomException;
-
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static com.nexters.kekechebe.domain.character.enums.Level.LEVEL1;
+import static com.nexters.kekechebe.exceptions.StatusCode.TOKEN_UNAUTHORIZED;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +30,7 @@ public class CharacterService {
 
     private final CharacterRepository characterRepository;
     private final MemberRepository memberRepository;
+    private final SpecialtyRepository specialtyRepository;
 
     @Transactional
     public CharacterIdResponse saveCharacter(Member member, CharacterCreateRequest request) {
@@ -136,5 +134,30 @@ public class CharacterService {
             throw new CustomException(TOKEN_UNAUTHORIZED);
         }
         characterRepository.deleteById(character.getId());
+    }
+
+    @Transactional
+    public SpecialtyResponse saveSpecialty(Member member, Long characterId, SpecialtyCreateRequest request) {
+        List<SpecialtyInfo> requestSpecialties = request.getSpecialties();
+
+        Character character = characterRepository.findById(characterId)
+                .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
+
+        List<Specialty> specialties = requestSpecialties.stream()
+                .map(specialtyInfo -> Specialty.builder()
+                        .content(specialtyInfo.getContent())
+                        .memoCnt(0)
+                        .character(character)
+                        .build())
+                .toList();
+        List<Specialty> savedSpecialties = specialtyRepository.saveAll(specialties);
+
+        List<SpecialtyDetail> specialtyDetails = savedSpecialties.stream()
+                .map(Specialty::toSpecialtyDetail)
+                .toList();
+
+        return SpecialtyResponse.builder()
+                .specialties(specialtyDetails)
+                .build();
     }
 }

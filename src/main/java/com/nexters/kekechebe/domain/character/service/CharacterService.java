@@ -107,9 +107,7 @@ public class CharacterService {
         Character character = characterRepository.findById(characterId)
             .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
 
-        if (!member.getId().equals(character.getMember().getId())) {
-            throw new CustomException(TOKEN_UNAUTHORIZED);
-        }
+        validateMember(member, character);
 
         return new CharacterResponse(character);
     }
@@ -119,9 +117,7 @@ public class CharacterService {
         Character character = characterRepository.findById(characterId)
             .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
 
-        if (!member.getId().equals(character.getMember().getId())) {
-            throw new CustomException(TOKEN_UNAUTHORIZED);
-        }
+        validateMember(member, character);
         character.updateName(request.getName());
     }
 
@@ -130,9 +126,7 @@ public class CharacterService {
         Character character = characterRepository.findById(characterId)
             .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
 
-        if (!member.getId().equals(character.getMember().getId())) {
-            throw new CustomException(TOKEN_UNAUTHORIZED);
-        }
+        validateMember(member, character);
         characterRepository.deleteById(character.getId());
     }
 
@@ -142,6 +136,8 @@ public class CharacterService {
 
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
+
+        validateMember(member, character);
 
         List<Specialty> specialties = requestSpecialties.stream()
                 .map(specialtyInfo -> Specialty.builder()
@@ -168,10 +164,14 @@ public class CharacterService {
         Specialty specialty = specialtyRepository.findById(specialtyId)
                 .orElseThrow(() -> new NoResultException("주특기를 찾을 수 없습니다."));
 
+        validateMember(member, character);
+
+        specialtyRepository.delete(specialty);
+    }
+
+    private void validateMember(Member member, Character character) {
         if (!member.getId().equals(character.getMember().getId())) {
             throw new CustomException(TOKEN_UNAUTHORIZED);
         }
-
-        specialtyRepository.delete(specialty);
     }
 }

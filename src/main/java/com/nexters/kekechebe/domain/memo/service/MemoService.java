@@ -3,14 +3,14 @@ package com.nexters.kekechebe.domain.memo.service;
 import com.nexters.kekechebe.domain.character.dto.response.CharacterLevelUpResponse;
 import com.nexters.kekechebe.domain.character.entity.Character;
 import com.nexters.kekechebe.domain.character.repository.CharacterRepository;
-import com.nexters.kekechebe.domain.hashtag.entity.Hashtag;
-import com.nexters.kekechebe.domain.hashtag.repository.HashtagRepository;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoCreateRequest;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoPage;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
+import com.nexters.kekechebe.domain.specialty.entity.Specialty;
+import com.nexters.kekechebe.domain.specialty.repository.SpecialtyRepository;
 import com.nexters.kekechebe.util.time.TimeUtil;
 import com.nexters.kekechebe.util.time.Today;
 import jakarta.persistence.NoResultException;
@@ -30,15 +30,14 @@ public class MemoService {
 
     private final CharacterHelperService characterHelperService;
     private final MemoRepository memoRepository;
-    private final HashtagRepository hashtagRepository;
+    private final SpecialtyRepository specialtyRepository;
     private final CharacterRepository characterRepository;
 
     @Transactional
     public CharacterLevelUpResponse saveMemo(Member member, MemoCreateRequest request) {
         long characterId = request.getCharacterId();
         String content = request.getContent();
-        String htmlContent = request.getHtmlContent();
-        List<String> hashtags = request.getHashtags();
+        List<Long> specialtyIds = request.getSpecialtyIds();
 
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
@@ -47,22 +46,17 @@ public class MemoService {
 
         Memo memo = Memo.builder()
                 .content(content)
-                .htmlContent(htmlContent)
                 .member(member)
                 .character(character)
                 .build();
         memoRepository.save(memo);
 
+        List<Specialty> foundSpecialties = specialtyRepository.findAllById(specialtyIds);
+
+        foundSpecialties.forEach(Specialty::apply);
+
         characterHelperService.updateExp(character);
         boolean isLevelUp = characterHelperService.isLevelUp(character);
-
-        List<Hashtag> buildHashTags = hashtags.stream()
-                .map(hashtag -> Hashtag.builder()
-                        .content(hashtag)
-                        .memo(memo)
-                        .build())
-                .toList();
-        hashtagRepository.saveAll(buildHashTags);
 
         return CharacterLevelUpResponse.from(character, isLevelUp);
     }

@@ -1,13 +1,18 @@
 package com.nexters.kekechebe.domain.memo.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
 public class MemoCreateRequest {
+    @NotNull
     private long characterId;
-    private String htmlContent;
+
+    @NotBlank
     private String content;
-    private List<String> hashtags;
+
+    private List<Long> specialtyIds;
 }

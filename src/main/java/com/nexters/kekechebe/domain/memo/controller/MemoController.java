@@ -17,12 +17,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -55,7 +54,10 @@ public class MemoController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
     })
     @PostMapping()
-    public ResponseEntity<BaseResponse> saveMemo(@RequestBody MemoCreateRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<BaseResponse> saveMemo(
+            @RequestBody @Valid MemoCreateRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Member member = userDetails.getMember();
         CharacterLevelUpResponse characterLevelUp = memoService.saveMemo(member, request);
 

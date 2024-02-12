@@ -1,5 +1,6 @@
 package com.nexters.kekechebe.domain.memo.dto.response;
 
+import com.nexters.kekechebe.domain.character.dto.response.SpecialtyDetail;
 import com.nexters.kekechebe.domain.memo.dto.CharacterDetail;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,11 +15,9 @@ public class MemoDetail {
 
     private CharacterDetail character;
 
-    private String htmlContent;
-
     private String content;
 
-    private List<String> hashtags;
+    private List<SpecialtyDetail> specialties;
 
     private boolean isModified;
 

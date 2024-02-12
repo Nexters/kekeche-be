@@ -1,10 +1,12 @@
 package com.nexters.kekechebe.domain.memo.entity;
 
+import com.nexters.kekechebe.domain.character.dto.response.SpecialtyDetail;
 import com.nexters.kekechebe.domain.character.entity.Character;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.dto.CharacterDetail;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoDetail;
 import com.nexters.kekechebe.domain.memo_specialty.entity.MemoSpecialty;
+import com.nexters.kekechebe.domain.specialty.entity.Specialty;
 import com.nexters.kekechebe.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -69,8 +71,16 @@ public class Memo extends Timestamped {
                         .id(character.getId())
                         .name(character.getName())
                         .build())
+                .specialties(toSpecialtyDetail())
                 .isModified(isModified)
                 .createdAt(getCreatedAt())
                 .build();
+    }
+
+    private List<SpecialtyDetail> toSpecialtyDetail() {
+        return memoSpecialties.stream()
+                .map(MemoSpecialty::getSpecialty)
+                .map(Specialty::toSpecialtyDetail)
+                .toList();
     }
 }

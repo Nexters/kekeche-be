@@ -9,6 +9,8 @@ import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoPage;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
+import com.nexters.kekechebe.domain.memo_specialty.entity.MemoSpecialty;
+import com.nexters.kekechebe.domain.memo_specialty.repository.MemoSpecialtyRepository;
 import com.nexters.kekechebe.domain.specialty.entity.Specialty;
 import com.nexters.kekechebe.domain.specialty.repository.SpecialtyRepository;
 import com.nexters.kekechebe.util.time.TimeUtil;
@@ -31,6 +33,7 @@ public class MemoService {
     private final CharacterHelperService characterHelperService;
     private final MemoRepository memoRepository;
     private final SpecialtyRepository specialtyRepository;
+    private final MemoSpecialtyRepository memoSpecialtyRepository;
     private final CharacterRepository characterRepository;
 
     @Transactional
@@ -39,7 +42,7 @@ public class MemoService {
         String content = request.getContent();
         List<Long> specialtyIds = request.getSpecialtyIds();
 
-        Character character = characterRepository.findById(characterId)
+        Character character = characterRepository.findByIdAndMember(characterId, member)
                 .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
 
         validateMemoLimit(member, character);
@@ -51,9 +54,20 @@ public class MemoService {
                 .build();
         memoRepository.save(memo);
 
-        List<Specialty> foundSpecialties = specialtyRepository.findAllById(specialtyIds);
+        List<Specialty> foundSpecialties = specialtyIds.stream()
+                .map(specialtyId -> specialtyRepository.findByIdAndCharacter(specialtyId, character)
+                        .orElseThrow(() -> new NoResultException("해당 캐릭터에 해당하는 주특기를 찾을 수 없습니다.")))
+                .toList();
 
         foundSpecialties.forEach(Specialty::apply);
+
+        List<MemoSpecialty> memoSpecialties = foundSpecialties.stream()
+                .map(specialty -> MemoSpecialty.builder()
+                        .memo(memo)
+                        .specialty(specialty)
+                        .build())
+                .toList();
+        memoSpecialtyRepository.saveAll(memoSpecialties);
 
         characterHelperService.updateExp(character);
         boolean isLevelUp = characterHelperService.isLevelUp(character);
@@ -68,7 +82,7 @@ public class MemoService {
     }
 
     public MemoPage getCharacterMemos(Member member, long characterId, Pageable pageable) {
-        Character character = characterRepository.findById(characterId)
+        Character character = characterRepository.findByIdAndMember(characterId, member)
                 .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
 
         Page<Memo> memos = memoRepository.findAllByMemberAndCharacter(member, character, pageable);
@@ -85,17 +99,17 @@ public class MemoService {
         Memo memo = memoRepository.findByIdAndMember(memoId, member)
                 .orElseThrow(() -> new NoResultException("기록을 찾을 수 없습니다."));
 
-        hashtagRepository.deleteAll(memo.getHashtags());
-
-        List<Hashtag> buildHashTags = hashtags.stream()
-                .map(hashtag -> Hashtag.builder()
-                        .content(hashtag)
-                        .memo(memo)
-                        .build())
-                .toList();
-        hashtagRepository.saveAll(buildHashTags);
-
-        memo.updateContent(content, htmlContent);
+//        hashtagRepository.deleteAll(memo.getHashtags());
+//
+//        List<Hashtag> buildHashTags = hashtags.stream()
+//                .map(hashtag -> Hashtag.builder()
+//                        .content(hashtag)
+//                        .memo(memo)
+//                        .build())
+//                .toList();
+//        hashtagRepository.saveAll(buildHashTags);
+//
+//        memo.updateContent(content, htmlContent);
     }
 
     @Transactional

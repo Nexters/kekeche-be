@@ -52,9 +52,9 @@ public class AuthController {
 
         ResponseCookie rfCookie = ResponseCookie.from(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7))
             .path("/")
-            .httpOnly(false)
-            .secure(false)
-            .sameSite("none")
+            .domain("anotherme.today")
+            .httpOnly(true)
+            .secure(true)
             .build();
         response.setHeader("Set-Cookie", rfCookie.toString());
 
@@ -82,11 +82,11 @@ public class AuthController {
         String createToken = loginResponse.getAccessToken();
 
         ResponseCookie rfCookie = ResponseCookie.from(JwtUtil.AUTHORIZATION_HEADER, createToken.substring(7))
-                .path("/")
-                .httpOnly(false)
-                .secure(false)
-                .sameSite("none")
-                .build();
+            .path("/")
+            .domain("anotherme.today")
+            .httpOnly(true)
+            .secure(true)
+            .build();
         response.setHeader("Set-Cookie", rfCookie.toString());
 
         return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, loginResponse));

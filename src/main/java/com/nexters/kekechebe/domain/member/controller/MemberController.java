@@ -63,7 +63,9 @@ public class MemberController {
     })
     @PostMapping("/cheer/{memberId}")
     public ResponseEntity<DataResponse<MemberCheerResponse>> updateCheerCount(
-        @PathVariable("memberId") Long memberId) {
-        return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, memberService.updateCheerCount(memberId)));
+        @PathVariable("memberId") Long memberId
+        , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Member loginMember = userDetails != null ? userDetails.getMember() : null;
+        return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, memberService.updateCheerCount(loginMember, memberId)));
     }
 }

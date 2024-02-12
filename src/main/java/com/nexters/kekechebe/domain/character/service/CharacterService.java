@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.nexters.kekechebe.domain.character.enums.Level.LEVEL1;
-import static com.nexters.kekechebe.exceptions.StatusCode.TOKEN_UNAUTHORIZED;
+import static com.nexters.kekechebe.exceptions.StatusCode.UNAUTHORIZED_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -171,7 +171,7 @@ public class CharacterService {
 
     private void validateMember(Member member, Character character) {
         if (!member.getId().equals(character.getMember().getId())) {
-            throw new CustomException(TOKEN_UNAUTHORIZED);
+            throw new CustomException(UNAUTHORIZED_REQUEST);
         }
     }
 }

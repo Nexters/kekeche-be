@@ -169,6 +169,22 @@ public class CharacterService {
         specialtyRepository.delete(specialty);
     }
 
+    public SpecialtyResponse getSpecialty(Member member, Long characterId) {
+        Character character = characterRepository.findById(characterId)
+                .orElseThrow(() -> new NoResultException("캐릭터를 찾을 수 없습니다."));
+
+        validateMember(member, character);
+
+        List<Specialty> specialties = specialtyRepository.findAllByCharacter(character);
+        List<SpecialtyDetail> specialtyDetails = specialties.stream()
+                .map(Specialty::toSpecialtyDetail)
+                .toList();
+
+        return SpecialtyResponse.builder()
+                .specialties(specialtyDetails)
+                .build();
+    }
+
     private void validateMember(Member member, Character character) {
         if (!member.getId().equals(character.getMember().getId())) {
             throw new CustomException(UNAUTHORIZED_REQUEST);

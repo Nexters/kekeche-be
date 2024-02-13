@@ -122,7 +122,7 @@ public class MemoController {
             summary = "기록 수정",
             description = "회원이 썼던 기록을 수정합니다.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "기록 내용",
+                    description = "기록 내용, 기록에 포함할 주특기 id 리스트",
                     required = true
             )
     )
@@ -140,7 +140,11 @@ public class MemoController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
     })
     @PutMapping("/{memoId}")
-    public ResponseEntity<BaseResponse> updateMemo(@PathVariable("memoId") long memoId, @RequestBody MemoUpdateRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<BaseResponse> updateMemo(
+            @PathVariable("memoId") long memoId,
+            @RequestBody @Valid MemoUpdateRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Member member = userDetails.getMember();
         memoService.updateMemo(member, memoId, request);
 

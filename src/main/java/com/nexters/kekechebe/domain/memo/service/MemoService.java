@@ -13,6 +13,7 @@ import com.nexters.kekechebe.domain.memo_specialty.entity.MemoSpecialty;
 import com.nexters.kekechebe.domain.memo_specialty.repository.MemoSpecialtyRepository;
 import com.nexters.kekechebe.domain.specialty.entity.Specialty;
 import com.nexters.kekechebe.domain.specialty.repository.SpecialtyRepository;
+import com.nexters.kekechebe.util.specialty.SpecialtyUtil;
 import com.nexters.kekechebe.util.time.TimeUtil;
 import com.nexters.kekechebe.util.time.Today;
 import jakarta.persistence.NoResultException;
@@ -92,24 +93,42 @@ public class MemoService {
 
     @Transactional
     public void updateMemo(Member member, long memoId, MemoUpdateRequest request) {
-        List<String> hashtags = request.getHashtags();
+        List<Long> afterSpecialtyIds = request.getSpecialtyIds();
         String content = request.getContent();
-        String htmlContent = request.getHtmlContent();
 
         Memo memo = memoRepository.findByIdAndMember(memoId, member)
                 .orElseThrow(() -> new NoResultException("기록을 찾을 수 없습니다."));
+        Character character = memo.getCharacter();
 
-//        hashtagRepository.deleteAll(memo.getHashtags());
-//
-//        List<Hashtag> buildHashTags = hashtags.stream()
-//                .map(hashtag -> Hashtag.builder()
-//                        .content(hashtag)
-//                        .memo(memo)
-//                        .build())
-//                .toList();
-//        hashtagRepository.saveAll(buildHashTags);
-//
-//        memo.updateContent(content, htmlContent);
+        List<MemoSpecialty> beforeMemoSpecialties = memo.getMemoSpecialties();
+        List<Long> beforeSpecialtyIds = beforeMemoSpecialties.stream()
+                .map(MemoSpecialty::getSpecialty)
+                .map(Specialty::getId)
+                .toList();
+
+        List<Long> idsToDeleteSpecialties = SpecialtyUtil.getIdsToDeleteSpecialties(beforeSpecialtyIds, afterSpecialtyIds);
+        List<Long> idsToCreateSpecialties = SpecialtyUtil.getIdsToCreateSpecialties(beforeSpecialtyIds, afterSpecialtyIds);
+
+        List<Specialty> foundDeleteSpecialties = specialtyRepository.findAllById(idsToDeleteSpecialties);
+        foundDeleteSpecialties.forEach(Specialty::remove);
+
+        memoSpecialtyRepository.deleteAllBySpecialtyIdIn(idsToDeleteSpecialties);
+
+        List<Specialty> foundSpecialties = idsToCreateSpecialties.stream()
+                .map(specialtyId -> specialtyRepository.findByIdAndCharacter(specialtyId, character)
+                        .orElseThrow(() -> new NoResultException("해당 캐릭터에 해당하는 주특기를 찾을 수 없습니다.")))
+                .toList();
+        foundSpecialties.forEach(Specialty::apply);
+
+        List<MemoSpecialty> memoSpecialties = foundSpecialties.stream()
+                .map(specialty -> MemoSpecialty.builder()
+                        .memo(memo)
+                        .specialty(specialty)
+                        .build())
+                .toList();
+        memoSpecialtyRepository.saveAll(memoSpecialties);
+
+        memo.updateContent(content);
     }
 
     @Transactional

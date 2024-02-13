@@ -1,10 +1,5 @@
 package com.nexters.kekechebe.domain.member.service;
 
-import static com.nexters.kekechebe.exceptions.StatusCode.*;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.nexters.kekechebe.domain.character.repository.CharacterRepository;
 import com.nexters.kekechebe.domain.member.dto.response.MemberCheerResponse;
 import com.nexters.kekechebe.domain.member.dto.response.MemberResponse;
@@ -12,9 +7,12 @@ import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.repository.MemberRepository;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
 import com.nexters.kekechebe.exceptions.CustomException;
-
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.nexters.kekechebe.exceptions.StatusCode.UNAUTHORIZED_REQUEST;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +46,10 @@ public class MemberService {
             .memberId(accessMember.getId())
             .cheerCount(nextCount)
             .build();
+    }
+
+    @Transactional
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
     }
 }

@@ -19,6 +19,6 @@ public class CharacterThumbnailResponse {
     public CharacterThumbnailResponse(Character character) {
         this.id = character.getId();
         this.name = character.getName();
-        this.characterImage = madeCharacterUrl(character);
+        this.characterImage = madeCharacterThumbnailUrl(character);
     }
 }

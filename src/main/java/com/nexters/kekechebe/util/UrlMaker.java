@@ -8,7 +8,15 @@ public class UrlMaker {
     private final static String BASE_URL = "https://kr.object.ncloudstorage.com/kekeche-character";
 
     public static String madeCharacterUrl(Character character) {
-        String prefix = "character";
+        return madeUrl(character, "character");
+    }
+
+    public static String madeCharacterThumbnailUrl(Character character) {
+        return madeUrl(character, "character_thumbnail");
+    }
+
+    private static String madeUrl(Character character, String prefix) {
+        // String prefix = "character";
         String shape = String.valueOf(character.getShapeIdx());
         String variation = character.getVariation().getIndex().toString();
         String color = String.valueOf(character.getColorIdx());

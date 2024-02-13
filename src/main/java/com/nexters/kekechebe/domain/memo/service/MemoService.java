@@ -136,6 +136,11 @@ public class MemoService {
         Memo memo = memoRepository.findByIdAndMember(memoId, member)
                 .orElseThrow(() -> new NoResultException("기록을 찾을 수 없습니다."));
 
+        List<MemoSpecialty> memoSpecialties = memo.getMemoSpecialties();
+        memoSpecialties.stream()
+                .map(MemoSpecialty::getSpecialty)
+                .forEach(Specialty::remove);
+
         memoRepository.delete(memo);
     }
 

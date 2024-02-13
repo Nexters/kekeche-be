@@ -11,4 +11,5 @@ public class CharacterListResponse {
     private List<CharacterResponse> characters;
     private Boolean isMe;
     private String memberNickname;
+    private Integer cheerCount;
 }

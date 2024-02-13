@@ -90,6 +90,7 @@ public class CharacterService {
             .characters(characterListDto)
             .isMe(isMe)
             .memberNickname(accessMember.getNickname())
+            .cheerCount(accessMember.getCheerCount())
             .build();
     }
 

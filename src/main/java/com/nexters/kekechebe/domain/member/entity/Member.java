@@ -34,6 +34,9 @@ public class Member extends Timestamped {
     @Column(name = "kakao_id", nullable = false)
     private Long kakaoId;
 
+    @Column(name = "cheer_count", nullable = false)
+    private Integer cheerCount;
+
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Character> characters = new ArrayList<>();
 
@@ -44,10 +47,16 @@ public class Member extends Timestamped {
     public Member(
             String email,
             String nickname,
-            Long kakaoId
+            Long kakaoId,
+            Integer cheerCount
     ) {
         this.email = email;
         this.nickname = nickname;
         this.kakaoId = kakaoId;
+        this.cheerCount = cheerCount;
+    }
+
+    public Integer updateCheerCount(int count) {
+        return this.cheerCount += count;
     }
 }

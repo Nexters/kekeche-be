@@ -43,6 +43,14 @@ public class Specialty extends Timestamped {
         this.character = character;
     }
 
+    public void apply() {
+        memoCnt += 1;
+    }
+
+    public void remove() {
+        memoCnt -= 1;
+    }
+
     public SpecialtyDetail toSpecialtyDetail() {
         return SpecialtyDetail.builder()
                 .id(id)

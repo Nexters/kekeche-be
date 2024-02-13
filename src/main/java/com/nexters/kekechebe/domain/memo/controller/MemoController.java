@@ -17,12 +17,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -55,7 +54,10 @@ public class MemoController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
     })
     @PostMapping()
-    public ResponseEntity<BaseResponse> saveMemo(@RequestBody MemoCreateRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<BaseResponse> saveMemo(
+            @RequestBody @Valid MemoCreateRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Member member = userDetails.getMember();
         CharacterLevelUpResponse characterLevelUp = memoService.saveMemo(member, request);
 
@@ -120,7 +122,7 @@ public class MemoController {
             summary = "기록 수정",
             description = "회원이 썼던 기록을 수정합니다.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "기록 내용",
+                    description = "기록 내용, 기록에 포함할 주특기 id 리스트",
                     required = true
             )
     )
@@ -138,7 +140,11 @@ public class MemoController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
     })
     @PutMapping("/{memoId}")
-    public ResponseEntity<BaseResponse> updateMemo(@PathVariable("memoId") long memoId, @RequestBody MemoUpdateRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<BaseResponse> updateMemo(
+            @PathVariable("memoId") long memoId,
+            @RequestBody @Valid MemoUpdateRequest request,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Member member = userDetails.getMember();
         memoService.updateMemo(member, memoId, request);
 

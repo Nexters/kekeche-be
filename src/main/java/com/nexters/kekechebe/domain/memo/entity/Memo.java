@@ -1,11 +1,12 @@
 package com.nexters.kekechebe.domain.memo.entity;
 
+import com.nexters.kekechebe.domain.character.dto.response.SpecialtyDetail;
 import com.nexters.kekechebe.domain.character.entity.Character;
-import com.nexters.kekechebe.domain.hashtag.entity.Hashtag;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.dto.CharacterDetail;
-import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoDetail;
+import com.nexters.kekechebe.domain.memo_specialty.entity.MemoSpecialty;
+import com.nexters.kekechebe.domain.specialty.entity.Specialty;
 import com.nexters.kekechebe.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -29,9 +30,6 @@ public class Memo extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "html_content", nullable = false)
-    private String htmlContent;
-
     @Column(name = "content", nullable = false)
     private String content;
 
@@ -39,7 +37,7 @@ public class Memo extends Timestamped {
     private Boolean isModified = false;
 
     @OneToMany(mappedBy = "memo", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Hashtag> hashtags = new ArrayList<>();
+    private List<MemoSpecialty> memoSpecialties = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -52,18 +50,15 @@ public class Memo extends Timestamped {
     @Builder
     public Memo(
             String content,
-            String htmlContent,
             Member member,
             Character character
     ) {
         this.content = content;
-        this.htmlContent = htmlContent;
         this.member = member;
         this.character = character;
     }
 
-    public void updateContent(String content, String htmlContent) {
-        this.htmlContent = htmlContent;
+    public void updateContent(String content) {
         this.content = content;
         this.isModified = true;
     }
@@ -71,21 +66,21 @@ public class Memo extends Timestamped {
     public MemoDetail toMemoDetail() {
         return MemoDetail.builder()
                 .id(id)
-                .htmlContent(htmlContent)
                 .content(content)
                 .character(CharacterDetail.builder()
                         .id(character.getId())
                         .name(character.getName())
                         .build())
-                .hashtags(toHashtagContents())
+                .specialties(toSpecialtyDetail())
                 .isModified(isModified)
                 .createdAt(getCreatedAt())
                 .build();
     }
 
-    public List<String> toHashtagContents() {
-        return hashtags.stream()
-                .map(Hashtag::getContent)
+    private List<SpecialtyDetail> toSpecialtyDetail() {
+        return memoSpecialties.stream()
+                .map(MemoSpecialty::getSpecialty)
+                .map(Specialty::toSpecialtyDetail)
                 .toList();
     }
 }

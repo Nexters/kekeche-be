@@ -248,4 +248,26 @@ public class CharacterController {
         characterService.deleteSpecialty(member, characterId, specialtyId);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(StatusCode.OK));
     }
+
+    @Operation(summary = "캐릭터의 주특기 조회", description = "캐릭터의 주특기를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+    })
+    @GetMapping("/{characterId}/specialty")
+    public ResponseEntity<DataResponse<SpecialtyResponse>> getCharacterSpecialty(
+            @PathVariable("characterId") Long characterId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        Member member = userDetails.getMember();
+        SpecialtyResponse specialtyResponse = characterService.getSpecialty(member, characterId);
+        return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, specialtyResponse));
+    }
 }

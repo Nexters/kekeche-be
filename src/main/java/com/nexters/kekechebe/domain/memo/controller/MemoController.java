@@ -54,7 +54,7 @@ public class MemoController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
     })
     @PostMapping()
-    public ResponseEntity<BaseResponse> saveMemo(
+    public ResponseEntity<DataResponse<CharacterLevelUpResponse>> saveMemo(
             @RequestBody @Valid MemoCreateRequest request,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {

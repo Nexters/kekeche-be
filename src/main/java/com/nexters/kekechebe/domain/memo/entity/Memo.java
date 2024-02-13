@@ -1,5 +1,7 @@
 package com.nexters.kekechebe.domain.memo.entity;
 
+import static com.nexters.kekechebe.util.UrlMaker.*;
+
 import com.nexters.kekechebe.domain.character.dto.response.SpecialtyDetail;
 import com.nexters.kekechebe.domain.character.entity.Character;
 import com.nexters.kekechebe.domain.member.entity.Member;
@@ -70,6 +72,7 @@ public class Memo extends Timestamped {
                 .character(CharacterDetail.builder()
                         .id(character.getId())
                         .name(character.getName())
+                        .characterImage(madeCharacterThumbnailUrl(character))
                         .build())
                 .specialties(toSpecialtyDetail())
                 .isModified(isModified)

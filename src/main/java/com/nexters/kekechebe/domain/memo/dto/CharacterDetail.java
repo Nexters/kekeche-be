@@ -8,4 +8,5 @@ import lombok.Getter;
 public class CharacterDetail {
     private long id;
     private String name;
+    private String characterImage;
 }

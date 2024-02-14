@@ -30,7 +30,9 @@ public class CharacterResponse {
     private String itemImage;
     private List<Integer> keywords;
 
-    public CharacterResponse(Character character) {
+    private Boolean isMemoValid;
+
+    public CharacterResponse(Character character, Boolean isMemoValid) {
         this.id = character.getId();
         this.name = character.getName();
         this.level = character.getLevel();
@@ -40,6 +42,7 @@ public class CharacterResponse {
         this.characterImage = madeCharacterUrl(character);
         this.itemImage = madeItemUrl(character);
         this.keywords = parseKeywords(character.getKeywords());
+        this.isMemoValid = isMemoValid;
     }
 
     private List<Integer> parseKeywords(String keywords) {

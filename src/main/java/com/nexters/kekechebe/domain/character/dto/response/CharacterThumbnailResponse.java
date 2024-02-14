@@ -16,9 +16,12 @@ public class CharacterThumbnailResponse {
     private String name;
     private String characterImage;
 
-    public CharacterThumbnailResponse(Character character) {
+    private Boolean isMemoValid;
+
+    public CharacterThumbnailResponse(Character character, Boolean isMemoValid) {
         this.id = character.getId();
         this.name = character.getName();
         this.characterImage = madeCharacterThumbnailUrl(character);
+        this.isMemoValid = isMemoValid;
     }
 }

@@ -65,8 +65,9 @@ public class CharacterController {
     })
     @PostMapping
     public ResponseEntity<BaseResponse> saveCharacter(
-        @RequestBody @Valid CharacterCreateRequest request
-        , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        @RequestBody @Valid CharacterCreateRequest request,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Member member = userDetails.getMember();
         CharacterIdResponse characterIdResponse = characterService.saveCharacter(member, request);
         return ResponseEntity.status(StatusCode.CREATED.getCode()).body(new DataResponse<>(StatusCode.CREATED, characterIdResponse));
@@ -87,8 +88,9 @@ public class CharacterController {
     })
     @GetMapping( "/member/{memberId}")
     public ResponseEntity<DataResponse<CharacterListResponse>> getAllCharacter(
-        @PathVariable("memberId") Long memberId
-        , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        @PathVariable("memberId") Long memberId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         CharacterListResponse characterListResponse;
         if (userDetails == null) {
             characterListResponse = characterService.getAllCharacter(memberId);
@@ -114,8 +116,9 @@ public class CharacterController {
     })
     @GetMapping("/{characterId}")
     public ResponseEntity<DataResponse<CharacterResponse>> getCharacter(
-        @PathVariable("characterId") Long characterId
-        , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        @PathVariable("characterId") Long characterId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Member member = userDetails.getMember();
         CharacterResponse characterResponse = characterService.getCharacterDetail(member, characterId);
         return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, characterResponse));
@@ -134,7 +137,9 @@ public class CharacterController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
     })
     @GetMapping("/thumbnail")
-    public ResponseEntity<DataResponse<List<CharacterThumbnailResponse>>> getCharacterThumbnail(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<DataResponse<List<CharacterThumbnailResponse>>> getCharacterThumbnail(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Member member = userDetails.getMember();
         List<CharacterThumbnailResponse> characterThumbnailList = characterService.getAllCharacterThumbnail(member);
         return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, characterThumbnailList));
@@ -163,9 +168,10 @@ public class CharacterController {
     })
     @PutMapping("/{characterId}")
     public ResponseEntity<BaseResponse> updateCharacterName(
-        @PathVariable("characterId") Long characterId
-        , @RequestBody CharacterNameUpdateRequest request
-        , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        @PathVariable("characterId") Long characterId,
+        @RequestBody CharacterNameUpdateRequest request,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Member member = userDetails.getMember();
         characterService.updateCharacterName(member, characterId, request);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(StatusCode.OK));
@@ -187,8 +193,9 @@ public class CharacterController {
     })
     @DeleteMapping("/{characterId}")
     public ResponseEntity<BaseResponse> deleteCharacter(
-        @PathVariable("characterId") Long characterId
-        , @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        @PathVariable("characterId") Long characterId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Member member = userDetails.getMember();
         characterService.deleteCharacter(member, characterId);
         return ResponseEntity.status(HttpStatus.OK).body(new BaseResponse(StatusCode.OK));

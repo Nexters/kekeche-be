@@ -10,9 +10,12 @@ import com.nexters.kekechebe.domain.character.enums.CharacterAsset;
 import com.nexters.kekechebe.domain.character.repository.CharacterRepository;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.repository.MemberRepository;
+import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
 import com.nexters.kekechebe.domain.specialty.entity.Specialty;
 import com.nexters.kekechebe.domain.specialty.repository.SpecialtyRepository;
 import com.nexters.kekechebe.exceptions.CustomException;
+import com.nexters.kekechebe.util.time.TimeUtil;
+import com.nexters.kekechebe.util.time.Today;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,10 +30,12 @@ import static com.nexters.kekechebe.exceptions.StatusCode.UNAUTHORIZED_REQUEST;
 @RequiredArgsConstructor
 public class CharacterService {
     private static final int CHARACTER_LIMIT = 6;
+    private static final int MEMO_LIMIT = 3;
 
     private final CharacterRepository characterRepository;
     private final MemberRepository memberRepository;
     private final SpecialtyRepository specialtyRepository;
+    private final MemoRepository memoRepository;
 
     @Transactional
     public CharacterIdResponse saveCharacter(Member member, CharacterCreateRequest request) {
@@ -83,7 +88,7 @@ public class CharacterService {
 
         List<CharacterResponse> characterListDto = characterList
             .stream()
-            .map(CharacterResponse::new)
+            .map(character -> new CharacterResponse(character, isMemoValid(accessMember, character)))
             .toList();
 
         return CharacterListResponse.builder()
@@ -99,7 +104,7 @@ public class CharacterService {
         List<Character> characterList = characterRepository.findAllByMemberId(member.getId());
         return characterList
             .stream()
-            .map(CharacterThumbnailResponse::new)
+            .map(character -> new CharacterThumbnailResponse(character, isMemoValid(member, character)))
             .toList();
     }
 
@@ -110,7 +115,7 @@ public class CharacterService {
 
         validateMember(member, character);
 
-        return new CharacterResponse(character);
+        return new CharacterResponse(character, isMemoValid(member, character));
     }
 
     @Transactional
@@ -190,5 +195,13 @@ public class CharacterService {
         if (!member.getId().equals(character.getMember().getId())) {
             throw new CustomException(UNAUTHORIZED_REQUEST);
         }
+    }
+
+    private boolean isMemoValid(Member member, Character character) {
+        Today today = TimeUtil.getStartAndEndOfToday();
+
+        int memoCnt = memoRepository.countByMemberAndCharacterAndCreatedAtBetween(member, character, today.getStartOfDay(), today.getEndOfDay());
+
+        return memoCnt < MEMO_LIMIT;
     }
 }

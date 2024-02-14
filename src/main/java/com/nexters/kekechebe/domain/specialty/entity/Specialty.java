@@ -2,6 +2,7 @@ package com.nexters.kekechebe.domain.specialty.entity;
 
 import com.nexters.kekechebe.domain.character.dto.response.SpecialtyDetail;
 import com.nexters.kekechebe.domain.character.entity.Character;
+import com.nexters.kekechebe.domain.memo_specialty.entity.MemoSpecialty;
 import com.nexters.kekechebe.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,6 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,6 +35,9 @@ public class Specialty extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "character_id", nullable = false)
     private Character character;
+
+    @OneToMany(mappedBy = "specialty", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<MemoSpecialty> memoSpecialties = new ArrayList<>();
 
     @Builder
     public Specialty(

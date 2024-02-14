@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface MemoRepository extends JpaRepository<Memo, Long> {
-    @Query("SELECT m FROM Memo m JOIN FETCH m.character JOIN FETCH m.memoSpecialties WHERE m.id = :memoId AND m.member = :member")
+    @Query("SELECT m FROM Memo m JOIN FETCH m.character LEFT JOIN FETCH m.memoSpecialties WHERE m.id = :memoId AND m.member = :member")
     Optional<Memo> findByIdAndMember(@Param("memoId") Long memoId, @Param("member") Member member);
 
     @Query("SELECT m FROM Memo m JOIN FETCH m.character WHERE m.member = :member")

@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
-public class MemberResponse {
+public class MemberInfoResponse {
     private final long memberId;
     private final String nickname;
+    private final long characterCount;
+    private final long memoCount;
 }

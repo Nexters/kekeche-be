@@ -1,6 +1,7 @@
 package com.nexters.kekechebe.domain.member.controller;
 
 import com.nexters.kekechebe.domain.member.dto.response.MemberCheerResponse;
+import com.nexters.kekechebe.domain.member.dto.response.MemberInfoResponse;
 import com.nexters.kekechebe.domain.member.dto.response.MemberResponse;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.service.MemberService;
@@ -29,6 +30,24 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberService memberService;
 
+    @Operation(summary = "회원 정보 조회(id, nickname only)", description = "회원의 정보를 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+        @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+        @ApiResponse(responseCode = "404", description = "NOT FOUND",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+        @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+    })
+    @GetMapping("/info")
+    public ResponseEntity<DataResponse<MemberResponse>> getMember(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Member member = userDetails.getMember();
+        return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, memberService.getMember(member)));
+    }
+
     @Operation(summary = "회원 정보 조회", description = "회원의 정보를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
@@ -42,7 +61,7 @@ public class MemberController {
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
     })
     @GetMapping
-    public ResponseEntity<DataResponse<MemberResponse>> getMemberInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<DataResponse<MemberInfoResponse>> getMemberInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
         return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, memberService.getMemberInfo(member)));
     }

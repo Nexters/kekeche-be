@@ -2,6 +2,7 @@ package com.nexters.kekechebe.domain.member.service;
 
 import com.nexters.kekechebe.domain.character.repository.CharacterRepository;
 import com.nexters.kekechebe.domain.member.dto.response.MemberCheerResponse;
+import com.nexters.kekechebe.domain.member.dto.response.MemberInfoResponse;
 import com.nexters.kekechebe.domain.member.dto.response.MemberResponse;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.repository.MemberRepository;
@@ -22,11 +23,18 @@ public class MemberService {
     private final MemoRepository memoRepository;
     private final MemberRepository memberRepository;
 
-    public MemberResponse getMemberInfo(Member member) {
+    public MemberResponse getMember(Member member) {
+        return MemberResponse.builder()
+            .memberId(member.getId())
+            .nickname(member.getNickname())
+            .build();
+    }
+
+    public MemberInfoResponse getMemberInfo(Member member) {
         long characterCount = characterRepository.countCharacterByMember(member);
         long memoCount = memoRepository.countMemoByMember(member);
 
-        return MemberResponse.builder()
+        return MemberInfoResponse.builder()
             .memberId(member.getId())
             .nickname(member.getNickname())
             .characterCount(characterCount)

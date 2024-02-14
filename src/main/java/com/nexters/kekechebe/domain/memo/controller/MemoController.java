@@ -43,8 +43,7 @@ public class MemoController {
             )
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "CREATED",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = BaseResponse.class))),
+            @ApiResponse(responseCode = "201", description = "CREATED"),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
             @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",

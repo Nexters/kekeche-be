@@ -68,6 +68,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("https://kekeche-deploy.vercel.app");
         configuration.addAllowedOrigin("https://www.anotherme.today");
+        configuration.addAllowedOrigin("https://anotherme.today");
 
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");

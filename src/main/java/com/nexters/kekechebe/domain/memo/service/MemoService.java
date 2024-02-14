@@ -6,6 +6,7 @@ import com.nexters.kekechebe.domain.character.repository.CharacterRepository;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoCreateRequest;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
+import com.nexters.kekechebe.domain.memo.dto.response.MemoDetail;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoPage;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
@@ -89,6 +90,13 @@ public class MemoService {
         Page<Memo> memos = memoRepository.findAllByMemberAndCharacter(member, character, pageable);
 
         return MemoPage.from(memos);
+    }
+
+    public MemoDetail getMemo(Member member, long memoId) {
+        Memo memo = memoRepository.findByIdAndMember(memoId, member)
+                .orElseThrow(() -> new NoResultException("기록을 찾을 수 없습니다."));
+
+        return memo.toMemoDetail();
     }
 
     @Transactional

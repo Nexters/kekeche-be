@@ -4,6 +4,7 @@ import com.nexters.kekechebe.domain.character.dto.response.CharacterLevelUpRespo
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoCreateRequest;
 import com.nexters.kekechebe.domain.memo.dto.request.MemoUpdateRequest;
+import com.nexters.kekechebe.domain.memo.dto.response.MemoDetail;
 import com.nexters.kekechebe.domain.memo.dto.response.MemoPage;
 import com.nexters.kekechebe.domain.memo.service.MemoService;
 import com.nexters.kekechebe.dto.BaseResponse;
@@ -116,6 +117,30 @@ public class MemoController {
         MemoPage characterMemoPage = memoService.getCharacterMemos(member, characterId, pageable);
 
         return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, characterMemoPage));
+    }
+
+    @Operation(summary = "기록 상세 조회", description = "특정 기록을 조회합니다.")
+    @Parameter(name = "memoId", description = "조회할 기록의 id", example = "12", required = true)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "401", description = "UNAUTHORIZED",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = ExceptionResponse.class))),
+    })
+    @GetMapping("/{memoId}")
+    public ResponseEntity<DataResponse<MemoDetail>> getMemo(
+            @PathVariable("memoId") long memoId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails)
+    {
+        Member member = userDetails.getMember();
+        MemoDetail memoDetail = memoService.getMemo(member, memoId);
+
+        return ResponseEntity.ok(new DataResponse<>(StatusCode.OK, memoDetail));
     }
 
     @Operation(

@@ -64,6 +64,7 @@ public class KakaoAuthService implements AuthService {
                 .email(userInfoDto.getEmail())
                 .nickname(userInfoDto.getNickname())
                 .kakaoId(userInfoDto.getId())
+                .cheerCount(0)
                 .build();
         return memberRepository.save(kakaoUser);
     }

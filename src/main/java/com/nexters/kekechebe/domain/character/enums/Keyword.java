@@ -4,10 +4,14 @@ package com.nexters.kekechebe.domain.character.enums;
 import java.util.List;
 
 public class Keyword {
-    private static final List<String> KEYWORD_LIST = List.of("열정적인", "꼼꼼한", "사려깊은", "창의적인"
-                                                                , "사교적인", "긍정적인", "유연한", "책임감 있는"
-                                                                , "비판적인", "성실한", "관대한", "자신감 있는"
-                                                                , "협력적인", "여유로운", "따뜻한", "냉철한");
+    private static final List<String> KEYWORD_LIST = List.of("다정한", "귀여운", "느긋한", "감성적인"
+                                                                , "낭만적", "열정적", "대담한", "욕심 많은"
+                                                                , "도전적", "단호한", "웃긴", "쾌활한"
+                                                                , "사교적", "활발한", "긍정적", "조용한"
+                                                                , "지혜로운", "신중한", "꼼꼼한", "성실한"
+                                                                , "영리한", "분석적", "냉철한", "지적인"
+                                                                , "현실적", "창의적", "독립적", "민감한"
+                                                                , "솔직한", "독특한");
 
     public static boolean areKeywordsValid(List<Integer> keywords) {
         for (int index : keywords) {

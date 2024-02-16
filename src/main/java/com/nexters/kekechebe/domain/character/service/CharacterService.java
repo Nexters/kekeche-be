@@ -30,8 +30,8 @@ import static com.nexters.kekechebe.exceptions.StatusCode.UNAUTHORIZED_REQUEST;
 @RequiredArgsConstructor
 public class CharacterService {
     private static final int CHARACTER_LIMIT = 6;
-    private static final int MEMO_LIMIT = 4;
-    private static final int SPECIALTY_LIMIT = 3;
+    private static final int MEMO_LIMIT = 3;
+    private static final int SPECIALTY_LIMIT = 4;
 
     private final CharacterRepository characterRepository;
     private final MemberRepository memberRepository;
@@ -202,7 +202,7 @@ public class CharacterService {
     private void validateSpecialtyLimit(Character character, int requestSpecialtyCnt) {
         int specialtyCnt = specialtyRepository.countByCharacter(character);
 
-        if (specialtyCnt + requestSpecialtyCnt >= SPECIALTY_LIMIT) {
+        if (specialtyCnt + requestSpecialtyCnt > SPECIALTY_LIMIT) {
             throw new IllegalStateException("캐릭터당 허용된 기록 개수를 초과하였습니다.");
         }
     }

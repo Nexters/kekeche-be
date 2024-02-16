@@ -12,10 +12,10 @@ import lombok.Getter;
 
 @Getter
 public class CharacterCreateRequest {
-    private static final String CHARACTER_NAME_REGEX = "^[가-힣a-zA-Z\\s]{1,8}$";
+    // private static final String CHARACTER_NAME_REGEX = "^[가-힣a-zA-Z\\s]{1,8}$";
 
     @NotBlank(message = "캐릭터 이름을 입력해 주세요.")
-    @Pattern(regexp = CHARACTER_NAME_REGEX, message = "캐릭터 이름은 한글, 영문 대소문자, 공백 포함 최대 8자만 허용됩니다.")
+    // @Pattern(regexp = CHARACTER_NAME_REGEX, message = "캐릭터 이름은 한글, 영문 대소문자, 공백 포함 최대 8자만 허용됩니다.")
     private String name;
     @NotNull(message = "캐릭터 모습을 선택해 주세요.")
     @Min(value = 0, message = "캐릭터 모습 index는 0 이상이어야 합니다.")

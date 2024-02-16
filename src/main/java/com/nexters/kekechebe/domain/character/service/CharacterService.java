@@ -200,9 +200,7 @@ public class CharacterService {
     }
 
     private void validateSpecialtyLimit(Character character, int requestSpecialtyCnt) {
-        Today today = TimeUtil.getStartAndEndOfToday();
-
-        int specialtyCnt = specialtyRepository.countByCharacterAndCreatedAtBetween(character, today.getStartOfDay(), today.getEndOfDay());
+        int specialtyCnt = specialtyRepository.countByCharacter(character);
 
         if (specialtyCnt + requestSpecialtyCnt >= SPECIALTY_LIMIT) {
             throw new IllegalStateException("캐릭터당 허용된 기록 개수를 초과하였습니다.");

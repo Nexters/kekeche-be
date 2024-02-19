@@ -3,6 +3,7 @@ package com.nexters.kekechebe.domain.character.entity;
 import com.nexters.kekechebe.domain.character.enums.CharacterAsset;
 import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.memo.entity.Memo;
+import com.nexters.kekechebe.domain.specialty.entity.Specialty;
 import com.nexters.kekechebe.util.Timestamped;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -57,6 +58,9 @@ public class Character extends Timestamped {
 
     @OneToMany(mappedBy = "character", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Memo> memos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "character", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Specialty> specialties = new ArrayList<>();
 
     @Builder
     public Character(

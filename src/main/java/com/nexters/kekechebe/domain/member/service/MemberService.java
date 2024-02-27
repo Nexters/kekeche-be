@@ -43,7 +43,7 @@ public class MemberService {
             .nickname(member.getNickname())
             .characterCount(characterCount)
             .memoCount(memoCount)
-            .joinDays(TimeUtil.getDateBetween(member.getCreatedAt().toLocalDate(), LocalDate.now()))
+            .joinDays(getJoinDays(member.getCreatedAt()))
             .build();
     }
 
@@ -64,5 +64,9 @@ public class MemberService {
     @Transactional
     public void deleteMember(Member member) {
         memberRepository.delete(member);
+    }
+
+    private long getJoinDays(LocalDateTime createdAt) {
+        return TimeUtil.getDateBetween(createdAt.toLocalDate(), LocalDate.now())+1;
     }
 }

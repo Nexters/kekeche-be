@@ -67,6 +67,6 @@ public class MemberService {
     }
 
     private long getJoinDays(LocalDateTime createdAt) {
-        return TimeUtil.getDateBetween(createdAt.toLocalDate(), LocalDate.now())+1;
+        return TimeUtil.getDateBetween(createdAt.toLocalDate(), LocalDate.now()) + 1;
     }
 }

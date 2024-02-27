@@ -14,4 +14,5 @@ public class MemberInfoResponse {
     private final String nickname;
     private final long characterCount;
     private final long memoCount;
+    private final long joinDays;
 }

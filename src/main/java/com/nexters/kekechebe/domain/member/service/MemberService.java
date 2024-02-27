@@ -8,10 +8,14 @@ import com.nexters.kekechebe.domain.member.entity.Member;
 import com.nexters.kekechebe.domain.member.repository.MemberRepository;
 import com.nexters.kekechebe.domain.memo.repository.MemoRepository;
 import com.nexters.kekechebe.exceptions.CustomException;
+import com.nexters.kekechebe.util.time.TimeUtil;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static com.nexters.kekechebe.exceptions.StatusCode.UNAUTHORIZED_REQUEST;
 
@@ -39,6 +43,7 @@ public class MemberService {
             .nickname(member.getNickname())
             .characterCount(characterCount)
             .memoCount(memoCount)
+            .joinDays(TimeUtil.getDateBetween(member.getCreatedAt().toLocalDate(), LocalDate.now()))
             .build();
     }
 

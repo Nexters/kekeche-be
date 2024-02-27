@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.nexters.kekechebe.domain.character.enums.Level.LEVEL1;
@@ -86,6 +88,7 @@ public class CharacterService {
 
     private CharacterListResponse buildCharacterListResponse(Member accessMember, Boolean isMe) {
         List<Character> characterList = characterRepository.findAllByMemberId(accessMember.getId());
+        Long memoCount = memoRepository.countMemoByMember(accessMember);
 
         List<CharacterResponse> characterListDto = characterList
             .stream()
@@ -97,7 +100,13 @@ public class CharacterService {
             .isMe(isMe)
             .memberNickname(accessMember.getNickname())
             .cheerCount(accessMember.getCheerCount())
+            .memoCount(memoCount)
+            .joinDays(getJoinDays(accessMember.getCreatedAt()))
             .build();
+    }
+
+    private long getJoinDays(LocalDateTime createdAt) {
+        return TimeUtil.getDateBetween(createdAt.toLocalDate(), LocalDate.now()) + 1;
     }
 
     @Transactional(readOnly = true)

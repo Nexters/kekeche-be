@@ -12,4 +12,6 @@ public class CharacterListResponse {
     private Boolean isMe;
     private String memberNickname;
     private Integer cheerCount;
+    private Long memoCount;
+    private Long joinDays;
 }
